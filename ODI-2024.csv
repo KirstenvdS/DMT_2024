@@ -1,0 +1,248 @@
+Tijdstempel,What programme are you in?,Have you taken a course on machine learning?,Have you taken a course on information retrieval?,Have you taken a course on statistics?,Have you taken a course on databases?,What is your gender?,I have used ChatGPT to help me with some of my study assignments ,When is your birthday (date)?,How many students do you estimate there are in the room?,Did you stand up to come to your previous answer    ?,What is your stress level (0-100)?,How many hours per week do you do sports (in whole hours)? ,Give a random number,Time you went to bed Yesterday,What makes a good day for you (1)?,What makes a good day for you (2)?
+,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,
+4/2/2024 12:08:49,CLS,no,0,mu,nee,female,yes,3.25,300,no,10000000,10,360,1:00,TV shows,friends
+4/2/2024 12:08:55,Genes in Behavior and Health,no,0,mu,nee,female,yes,06/10/1994,300,no,35,4,47,1:00,Sports,Friends
+4/2/2024 12:08:55,AI,yes,1,mu,ja,female,not willing to say,05.04.1996,200,no,76,0,35,0:00,If the to do list is empty ,If I have a new book
+4/2/2024 12:09:00,Business Analytics,yes,unknown,mu,nee,female,not willing to say,28/10/1997,134,no,30,3,5,2:00 AM,Food,Shopping
+4/2/2024 12:09:02,Master Econometrics and Data Science,yes,0,mu,ja,female,no,04/06/2002,200,no,20,8,3,23:30,Good food,Good company
+4/2/2024 12:09:02,Computer Science MSC,no,0,unknown,ja,female,yes,21-05-2001,200,no,40,2,67,23:00,Good sleep,Good breakfast
+4/2/2024 12:09:04,Business Analytics,yes,1,mu,ja,female,yes,20-07-2001,300,no,30,6,8,23.30,Sunshine,Nice people around me
+4/2/2024 12:09:04,Artificial intelligence ,yes,1,mu,ja,female,yes,12.12.2000,200,no,30,2,12,3:00,good warm weather ,spending time with friends 
+4/2/2024 12:09:07,Master ai,yes,0,mu,nee,female,yes,4 april 2000,250,no,30,8,4,00:15,Food,Day off
+4/2/2024 12:09:08,Artificial intelligence ,yes,1,mu,nee,male,yes,04.08.1999,258,no,12,6,8,01:00,"Gym, food and sex",Party
+4/2/2024 12:09:08,MSc Artificial Intelligence,yes,0,mu,nee,female,yes,13-05-2000,150,no,20,4,38,23:00,Seeing my friends,Working out
+4/2/2024 12:09:09,Big Data Engineering,yes,1,mu,ja,male,yes,9 january,200,no,404,2-4,1234567890,04:20,When my family is happy,When it is sunny and snowing
+4/2/2024 12:09:09,Bioinformatics,yes,0,mu,nee,female,yes,06/24/1999,300,no,60,2,22,12,Good food,Nice weather
+4/2/2024 12:09:09,AI,yes,0,sigma,ja,female,yes,10-10-2000,270,no,70,5,68,1:15,Coffee,Eggs
+4/2/2024 12:09:09,Artificial Intelligence ,yes,0,unknown,nee,male,yes,24.03.1997,200,no,10,6,42,6:00,Good weather,Seeing my friends 
+4/2/2024 12:09:12,Masters in AI ,yes,0,mu,nee,male,yes,08/09/1992,150,no,0,14,67,12:00,Working out,Eating pizza 
+4/2/2024 12:09:14,Artificial Intelligence,yes,0,mu,ja,male,no,20-06-1998,150,no,99,10,222,03:00,Good sleep,Good food
+4/2/2024 12:09:14,CS,yes,0,sigma,nee,other,yes,14-11-2100,200,no,0,2,78675643,02:00,happy,more happy
+4/2/2024 12:09:14,Computer science,no,0,mu,ja,male,yes,04-11-2001,200,no,50,0,98934847,23:30,Rest,Games
+4/2/2024 12:09:15,Computer Science,yes,0,sigma,ja,male,yes,29-10,340,no,65,8,8,00:00,Good Weather,Good Meal
+4/2/2024 12:09:16,Bioinformatics and Systems Biology,yes,0,mu,ja,female,yes,03/07/1998,200,no,25,0,42,0:40,Sleep,Food
+4/2/2024 12:09:16,MSc AI,yes,1,mu,ja,male,yes,27-08-1999,190,no,5,7,55,01:30,Not waking up tired,Eating enough through the day
+4/2/2024 12:09:18,big data engineering,yes,0,mu,nee,female,yes,14-08-2000,300,no,99.99,5,42,12,Shopping,Shopping
+4/2/2024 12:09:18,Master AI,yes,0,mu,nee,female,yes,17 December ,250,no,25,0,88,00:30,Sleeping in ,Sun shining 
+4/2/2024 12:09:19,Artificial Intelligence ,yes,0,sigma,nee,female,yes,02-08-1999,180,no,20,3,28,21:30,Sunshine,Seeing friends
+4/2/2024 12:09:19,VU CS,yes,0,mu,nee,not willing to answer,yes,4,400,unknown,88,5,114514,4,Good weather,Good sleep
+4/2/2024 12:09:19,AI,yes,1,mu,ja,male,no,16/09/1998,210,no,25,8,69,12:00,Big Booty Latinas,Cats
+4/2/2024 12:09:21,computer science ,yes,0,mu,ja,female,yes,21-08,220,yes,60,6,21,00:00,Nice food ,Spending nice time with others 
+4/2/2024 12:09:21,AI,yes,0,mu,ja,male,yes,18-12-1998,300,no,80,2,197307,2,coffee,Good sleep
+4/2/2024 12:09:22,Business analytics,yes,0,mu,nee,female,yes,08-03-2002,300,no,10,5,3572589,2300,Sunshine,Meeting friends
+4/2/2024 12:09:22,Fintech,yes,0,sigma,ja,male,yes,04/02/1995,200,no,95,5,3.14,3:40,Coffee,More coffee
+4/2/2024 12:09:23,AI,yes,1,mu,ja,female,yes,7 January ,200,no,35,4,36,10:30,Food,Food
+4/2/2024 12:09:24,Artificial Intelligence,yes,1,mu,ja,female,yes,10 November 1998,200,no,24,4,67,1 am,Good food,Nice weather
+4/2/2024 12:09:25,Computational Science,yes,1,sigma,ja,male,yes,16/09/1996,230,no,12,2,96,2 am,Low stress but productive,Not too many complications
+4/2/2024 12:09:25,Computational Science,no,0,mu,nee,female,yes,0709,200,no,60,6,33,12:30,Relax,Routine
+4/2/2024 12:09:26,Bioinformatics and System Biology,yes,0,unknown,nee,female,yes,7-03-2000,278,no,1,0,7,02:00,When I feel energetic ,When I am with friends and family
+4/2/2024 12:09:28,Master's Computational Science,yes,1,mu,ja,male,no,24,250,no,5,2,88754,12:00am,Tea,Lunch
+4/2/2024 12:09:28,MSc Artificial Intelligence UvA,yes,1,sigma,ja,male,yes,6/9/69,4,no,8,4,seven,01:00,sun,good food
+4/2/2024 12:09:29,Master of AI,yes,0,mu,nee,not willing to answer,yes,1995,200,no,100000000,0,60,1 AM,Tea,Loving ones
+4/2/2024 12:09:30,Mathematics ,no,0,mu,unknown,not willing to answer,no,Nov 28,300,no,20,0,19375931694,04:15,Guinea pigs,Baldur's gate 3
+4/2/2024 12:09:30,Masters Artificial Intelligence,yes,0,mu,ja,male,yes,17-10-2001,~280,no,20,4,29,02:00,Eating good food,Spending time with good people
+4/2/2024 12:09:30,Master AI,yes,1,unknown,ja,male,yes,27-08-2002,243,no,15,14,8,22:00,No assignments due in the next 3 days ,Playing games with my friends 
+4/2/2024 12:09:30,Bioinformatics and Systemsbiology,yes,0,mu,unknown,female,no,17-03-2001,250,no,78,8,28,23:30,Doing something fun,Going outside
+4/2/2024 12:09:32,Artificial Intelligence,yes,1,mu,ja,male,yes,17-07-2002 ,719,no,12,6,34,1,Sleeping in ,Relaxing
+4/2/2024 12:09:33,Computer Science,yes,1,mu,nee,female,yes,5-1-1998,100,no,90,10,40,9,When i do not have assignments,When I passed all the modules
+4/2/2024 12:09:34,Computational Finance,no,0,sigma,nee,female,not willing to say,10,200,unknown,80,1,70,12:00,Food,Sleep
+4/2/2024 12:09:34,computational science,yes,0,mu,nee,female,yes,13-march,150,no,75,0,13,03:40,good rest,sunshine
+4/2/2024 12:09:34,Computer Science,yes,0,mu,ja,male,yes,01-04-1996,350,no,90,6,0373,02:05,Seks,Getting my work done
+4/2/2024 12:09:35,Artificial Intelligence ,yes,0,mu,ja,female,yes,29/05/1999,130,no,1,1,3,24:00,enough time for a proper breakfast,exercise
+4/2/2024 12:09:36,Master AI,yes,1,unknown,nee,female,yes,09-09-1998,256,no,34,4,99,23:30,Being with friends,Sunshine
+4/2/2024 12:09:38,Master's Computer Science,yes,0,mu,nee,male,no,05.03.1999,300,no,60,1,5787573,01:00,A good breakfast,Time with my friends 
+4/2/2024 12:09:39,Bioinformatics and Systems Biology,yes,0,mu,ja,female,not willing to say,18-11-2002,214,no,57,0,73,03:00,You,Me
+4/2/2024 12:09:39,Artificial Intelligence,yes,0,mu,ja,not willing to answer,yes,bruh,150,no,80,6,2137,1:30 AM,Cafeteria pizza,Sun
+4/2/2024 12:09:40,computer science ,no,1,mu,ja,non-binary,no,1990-01-23,3000,no,98,0,1998,0:30,Good lover,Smoking
+4/2/2024 12:09:42,bioinformatics,yes,0,unknown,unknown,female,yes,23 July 2001,300,yes,30,0,12,12,sunny!,no deadline!
+4/2/2024 12:09:43,Msc AI,yes,1,mu,unknown,male,yes,18-01-2024,250,no,67,0,576,12:10,Staying at home,Finishing homework
+4/2/2024 12:09:43,Bioinformatics and Systems Biology,yes,0,mu,nee,male,yes,01102000,160,unknown,20,10,66,23:30,Good meals,Easy task
+4/2/2024 12:09:43,Computer Science,yes,1,mu,ja,male,yes,19-01-2001,250,no,10,2,69420,00:00,sun,a good day of work
+4/2/2024 12:09:44,DHP Quantitative Risk Management ,no,0,mu,ja,non-binary,yes,22-2-1998,180,no,1000,15,22,1:20,Peace ,Efficiency 
+4/2/2024 12:09:44,Artificial Intelligence master,no,1,mu,ja,female,yes,05-08,230,no,15,1.5,48,1:15,Enough sleep,Flowstate
+4/2/2024 12:09:45,AI,yes,0,sigma,ja,male,yes,05-03-2001,207,no,20,6,49,1:30 ,Good dinner ,Lot of free time
+4/2/2024 12:09:46,Master Ai,yes,0,mu,nee,not willing to answer,yes,01-01-1998,250,no,15,1,13,23.59,Coffee,Sex
+4/2/2024 12:09:46,Human Language Technology Research Masters,yes,unknown,unknown,ja,male,yes,09.02,140,yes,44,3,999,1:30,Good coffee,No rain
+4/2/2024 12:09:47,MSc Computational Science,no,0,mu,nee,male,no,25 May,225,no,40,0,7,12:30 AM,A day of productive work,A day of peace and leisure
+4/2/2024 12:09:47,Bioinformatics and Systems Biology,yes,0,mu,ja,female,not willing to say,05-11-2002,300,unknown,60,0,1999,01:00,Me,You
+4/2/2024 12:09:48,Masters in big data ,yes,1,mu,ja,female,yes,15/09/2000,200,no,45,0,55,12 am ,Sunshine ,Food 
+4/2/2024 12:09:48,MSc. Artificial Intelligence ,yes,0,mu,ja,male,yes,"Oct 18, 1998",225,no,1,5,9,3:30,"Friends, Family",Food
+4/2/2024 12:09:49,FinTech,yes,0,unknown,nee,female,yes,3-5-2000,367,no,90,4,31,02:45 am,Good company,Good food 
+4/2/2024 12:09:49,Business Analytics Master,yes,unknown,mu,nee,female,yes,04-06-1999,300,no,50,5,1,23:00,Sunshine ,Terrace 
+4/2/2024 12:09:49,AI Master ,no,0,mu,nee,female,yes,03/10/2001,100,no,70,5,8,23:00,sun ,dogs 
+4/2/2024 12:09:49,AI,yes,1,mu,ja,male,no,6/8/2002,315,no,80,0,9,23:30,Listening to music ,Sunny days 
+4/2/2024 12:09:53,Cs,yes,1,sigma,ja,male,not willing to say,19/02/2000,440,no,7,2,9291,00:00,Productive,Joyful
+4/2/2024 12:09:53,Master of Computer Science,yes,unknown,unknown,ja,male,yes,13/05/2000,300,no,78,10,9,3:00,Waking up to a man,The man cooks
+4/2/2024 12:09:54,Computer science ,yes,0,mu,ja,male,yes,27.09.1999,197,no,9,0.5,69,2:23,Nice food,Time with friends 
+4/2/2024 12:09:54,CS Big Data Engineering,yes,unknown,mu,ja,male,not willing to say,"July 07th, 2001",150-200,no,50,6 hours,37,06 am,Productivity,Physical and mental activity
+4/2/2024 12:09:55,Bioinformatics and Systems Biology,yes,0,sigma,nee,male,yes,06/10/1998,233,no,42,8,3,1 am,Good food,Friends
+4/2/2024 12:09:55,Business Analytics-Computational Intelligence ,yes,0,mu,nee,male,yes,12/10/1997,250,no,80,6,7,3 am ,Free day ,Good company 
+4/2/2024 12:09:55,MSc AI,no,0,mu,ja,non-binary,yes,2000-02-24,250,no,100,0,3,04:00 a.m.,Sunshine,Reading a book
+4/2/2024 12:09:56,Data mining ,yes,0,mu,ja,female,yes,2/5,100,no,70,2,99,1:00,Sun,Text
+4/2/2024 12:09:57,Computer Science,no,0,mu,ja,female,yes,11.05.2001,300,no,35,5,63,00:20,A nice-looking breakfast,Sunny weather
+4/2/2024 12:09:58,Msc computer science,yes,1,mu,ja,male,not willing to say,30/2/1999,385,no,100,0,69,10pm,Doing sport,Beer
+4/2/2024 12:09:58,Business Analytics,yes,1,mu,nee,male,yes,24-03-97,300,no,25,5,4,02:00,Being productive,Spend time with loved ones and have good food
+4/2/2024 12:09:58,AI,yes,0,mu,ja,male,yes,12/10/1999,230,no,1000,8,69,1:50,Bj,Coffee 
+4/2/2024 12:09:58,Computational Science ,yes,0,mu,ja,male,not willing to say,11 12 1994,250,no,20,5,42,00:30,Doing something rewarding and productive,Being with friends or girlfriend
+4/2/2024 12:10:00,Computer science ,yes,0,mu,ja,male,yes,11.22,200,no,75,10,66,11.30,Good sleep ,Flowers 
+4/2/2024 12:10:00,Artificial Intelligence,yes,0,sigma,nee,female,yes,15-12-2001,280,no,10,5,6291,1:30,When it is sunny,When I do fun activities with friends
+4/2/2024 12:10:01,Big Data Engineering,no,0,sigma,nee,female,no,10/10/1999,300,no,80,5,19,5:00,Good food,Good friend
+4/2/2024 12:10:02,Bioinformatics and Systems Biology ,yes,1,unknown,ja,female,yes,30-04-2002,257,no,0,0,7,03:00,Baking cake,Eating cake
+4/2/2024 12:10:05,computer science,yes,0,mu,ja,male,not willing to say,02-05,200,no,30,2,42,00:00,food,high score
+4/2/2024 12:10:05,Computer science,yes,0,sigma,ja,male,yes,Cucumber,3thousand,unknown,101,Whole 50,Tree,One,D,No d
+4/2/2024 12:10:06,Duisenbergs honours programme in quantitative risk management,yes,unknown,sigma,ja,female,yes,2000-01-01,300,no,10,1,537920,02:00,Being with friends,Having good food
+4/2/2024 12:10:06,Master Artificial Intelligence,yes,1,mu,ja,female,yes,30-09-2001,230,no,25,0,24,23:00,No stress,No deadlines
+4/2/2024 12:10:07,Artificial Intelligence,yes,1,unknown,ja,female,yes,02-11-2000,300,no,30,4,2000,22:00,Make someone happy,Doing sports and laugh with friends
+4/2/2024 12:10:07,MSc AI,yes,1,mu,ja,male,yes,30-09-1999,1 million,unknown,1,6,26,1am,Morning coffee and a cigarette,Protein shake after workout
+4/2/2024 12:10:07,Big data engineering,yes,1,mu,ja,male,no,19-02-1998,250,no,20,9,199978405,00:30,Food,Sports
+4/2/2024 12:10:07,Business Analytics,yes,1,mu,ja,male,no,04-02,210,no,15,2,13,23:30,Nice weather,No stress
+4/2/2024 12:10:08,Computational Science,no,0,mu,nee,male,no,13-08-2000,200,no,23,7,13,00:45,Interacting with friends,Achieving a goal set for that day
+4/2/2024 12:10:09,MSc Artificial Intelligence,yes,0,unknown,ja,male,yes,October 12th 1999,355,no,30,2,55,01:00,Drinking beer,When the sun shines a lot
+4/2/2024 12:10:11,AI,yes,0,mu,ja,male,yes,18-10-2001,200,no,60,8,8,03:00 AM,Amount of work done,Amount of time having fun
+4/2/2024 12:10:12,I'm an exchange student (political data journalism at my home university),yes,0,mu,nee,non-binary,yes,01.05.1998,220,no,40,7,53,00:30,Great food,Interaction with some of the wholesome people in my life 
+4/2/2024 12:10:12,Bioinformatics & Systems Biology,yes,0,mu,ja,male,not willing to say,16/09/1998,250,no,25,4,7,00:30,Be productive,Eat healty
+4/2/2024 12:10:12,Computational Science,no,0,sigma,nee,female,yes,11-01-2000,300,no,30,6,187,12,Good food,Getting work done
+4/2/2024 12:10:13,Business Analytics Master,yes,0,mu,ja,male,yes,05/03/2001,300,no,30,4,34,23:30,No train delays,No school or work obligations 
+4/2/2024 12:10:15,ai,yes,0,mu,nee,other,yes,21/2/1999,98,no,88,7,69,00:00,Free time,Sun
+4/2/2024 12:10:15,Master's AI,yes,0,mu,ja,male,yes,13.03.2000,150,no,20,2,117,2:00AM,Spaghetti ,I forgor💀
+4/2/2024 12:10:16,Computational Science,no,1,mu,ja,female,no,21.04.,275,no,20,5,82018,21:30,Meeting friends,Sunshine
+4/2/2024 12:10:17,AI master,yes,0,mu,nee,female,yes,19/07/199,200,no,30,2,17,11 pm,The sun,Day out with friends
+4/2/2024 12:10:19,Master in Artificial Intelligence,yes,1,mu,ja,male,not willing to say,11/04/2000,5,no,2,5,10836474839263563839201747482092647392,2am,Weed,Friends
+4/2/2024 12:10:21,AI,no,0,mu,nee,male,yes,01041997,300,no,80,8,99,2:00,No task,Having fun with friends or families 
+4/2/2024 12:10:22,Master Artificial Intelligence,yes,0,mu,ja,male,yes,22-12-2000,250,yes,1,8,2543892,23.00,Nice weather,Friends
+4/2/2024 12:10:23,Artificial Intelligence ,yes,0,mu,ja,male,yes,05.07.2000,150,no,90,2,184,04:00,Finish a demanding but interesting assignment,Impress work colleagues at work
+4/2/2024 12:10:23,Computational Science,yes,0,mu,ja,female,yes,15-11-1999,333,no,0,4,-42,11:30,Google form quizzes,good food
+4/2/2024 12:10:23,Artificial Intelligence,yes,0,mu,ja,female,yes,13/12/1996,300,no,50,3,13,02:00,herbal tea,a sense of accomplishment
+4/2/2024 12:10:24,computational science,no,0,mu,nee,non-binary,yes,15,200,no,90,5,4,6:00,Hanging out with friends,Staying at home killing time without assignments
+4/2/2024 12:10:24,MSc AI,no,0,mu,nee,male,not willing to say,03-01-1998,320,no,60,3,9,22:55,Being with people I love,Spending time on my priorities
+4/2/2024 12:10:24,Conputer Science ,no,0,mu,ja,male,yes,Feb 12 1999,300,no,88,4,74,24:00,No assignments ,No lecture
+4/2/2024 12:10:24,AI,no,1,mu,ja,not willing to answer,no,09.01.1998,350,no,5,18,6399592998959929994995999991117744472047591,1:55,Pancakes,Excercise
+4/2/2024 12:10:27,Combination Computer Science and Psychology (Exchange student),no,0,unknown,nee,female,yes,11.06.1998,500,no,40,0,1636287,00:30,Feeling the sun on my skin while outside,being rly cozy in my bed watching a show/reading
+4/2/2024 12:10:27,AI master,yes,1,mu,ja,male,not willing to say,14-03-1955,200,no,20,6,17389276163,00:22,Beers on the terrace ,The sun is shining
+4/2/2024 12:10:27,Master in Artificial Intelligence ,no,0,mu,nee,male,yes,23/12/1997,Around 200,no,30,1/2,1234567890,2.30 a.m.,Nice weather ,Relaxing with my friends 
+4/2/2024 12:10:27,AI,yes,1,mu,ja,female,yes,24-07-2000,147,yes,30,0,7,2:00,Nice weather,Good food
+4/2/2024 12:10:28,CLS,no,0,mu,nee,female,yes,08/09,180,yes,68,5,9,1 am,Eating a great meal ,Petting animals
+4/2/2024 12:10:29,computational science,yes,1,mu,ja,female,not willing to say,09052001,100,unknown,100,8,68,0:00,dessert,good weather
+4/2/2024 12:10:29,MSc Econometrics,yes,1,mu,ja,female,not willing to say,01-12-2000,300,no,5,10,6,00:00,Seeing friends/family,Football
+4/2/2024 12:10:29,data mining techiques,yes,0,mu,nee,male,not willing to say,30.08,250,yes,60,3,97,1:00 ,great weather ,meet friends
+4/2/2024 12:10:30,MSc Econometrics and Operations Research,yes,unknown,mu,nee,male,yes,27 October ,400,no,10,4,917382918,02:00,Being with friends,Being with girlfriend
+4/2/2024 12:10:31,Artificial Intelligence,yes,0,mu,ja,male,yes,31/07/2001,600,no,20,10,24,02:30,Sunny,Being together with crush
+4/2/2024 12:10:31,Artificial Intelligence,yes,0,unknown,ja,male,yes,17/04/2001,128,no,25,5,3,1:00,Sun,Being outside
+4/2/2024 12:10:31,AI,yes,0,mu,ja,male,yes,06.11.1895,300,no,15,6,73628262827281962829474,23:45,Nice weather,No rain
+4/2/2024 12:10:32,AI,yes,0,mu,ja,gender fluid,not willing to say,16.06.1998,120,yes,100,8,542671095432710265437281027472,23:55,Weed,Beer
+4/2/2024 12:10:33,Econometrics and Data Science (master),yes,1,mu,ja,male,not willing to say,13 november 1996,500,no,50,4,37,14:00,Money,Sunshine
+4/2/2024 12:10:34,AI,no,0,mu,nee,female,yes,08/06/1997,276,yes,80,2,942,1.00,Good friends,Feeling safe
+4/2/2024 12:10:37,AI,yes,0,mu,nee,male,yes,23/03/1999,250,no,10,6,Random number ,2:00,No lectures ,Lectures 
+4/2/2024 12:10:37,AI,no,0,mu,ja,female,yes,30052000,400,yes,20,2,0627,12:40,gelato,good weather
+4/2/2024 12:10:37,MSc bioinformatics and systems biology,yes,unknown,sigma,nee,male,yes,22nd of july,180,no,50,2,8,03.00,Full belly,Slept well
+4/2/2024 12:10:38,Artificial Intelligence MSc ,yes,0,mu,ja,female,yes,March 7,300,no,55,2,78,6:30 AM,Family,Friends
+4/2/2024 12:10:39,MSc. Computational Science,yes,0,mu,unknown,male,yes,2001.7.24,400,no,99,5,0,24:00,dog,food
+4/2/2024 12:10:39,AI,yes,1,mu,ja,gender fluid,not willing to say,over 9000,over 9000,no,9000,geen,9000,07:00,my fiance,my pet frog
+4/2/2024 12:10:41,Econometrics,yes,unknown,mu,ja,male,yes,03-05-1997,350,no,50,6,999,02:00,Having good sleep,No problems in private life
+4/2/2024 12:10:41,master AI UvA,yes,1,mu,ja,female,yes,26/03/2000,465,no,0,6,4,22:30,Spending time with some of my favorite people,Working out
+4/2/2024 12:10:41,Artificial Intelligence,yes,0,mu,ja,male,yes,10/11/2000,200,no,30,1,2,2:00,Friends,Accomplish something
+4/2/2024 12:10:42,Msc of Computer Science ,yes,1,mu,ja,male,yes,20-01-2001,350,no,65,8,8964,0130,Get things done,Meet friends 
+4/2/2024 12:10:43,Computer science ,yes,0,mu,ja,male,not willing to say,25/03/00,250,unknown,110,5,7,2,Not having to do anything involving my laptop,Lorem ipsum
+4/2/2024 12:10:43,Computer Science Masters ,no,0,unknown,nee,male,not willing to say,29 May 1998,180,no,80,0,169,1:30 AM,Sleeping in late,Playing Red Dead Redemption 2 on my laptop
+4/2/2024 12:10:45,Master Artificial Intelligence,yes,1,mu,ja,male,yes,28-03,300,no,0,12,5091,02:26,I did my tasks,I enjoyed myself
+4/2/2024 12:10:46,Business Analytics,yes,1,mu,ja,male,yes,25/06/2002,240,no,34,7,8648,00:30,Played sports,Talked to friends
+4/2/2024 12:10:47,Human language technology ,yes,unknown,unknown,unknown,female,not willing to say,1987,213,no,75.98,2,10642790,Midnight ,Chatting with my family ,Away from stress
+4/2/2024 12:10:47,AI,yes,0,mu,nee,male,no,19-06-1998,300,no,20,6,26,2:00,Meeting friends,Getting to do things I’m interested in
+4/2/2024 12:10:48,AI for health ,no,0,mu,ja,male,yes,25-03-1997,100,no,-1,8,13,12,waking up refreshed ,no work obligations 
+4/2/2024 12:10:48,MSc Econometrics ,yes,1,mu,ja,female,yes,31-07-1998,250,no,2,3,74,23.00 ,Laughter,Having friendly interactions
+4/2/2024 12:10:48,Masters in Big Data,yes,1,mu,ja,male,yes,5,150,no,100,1,420,10 PM,When I find a good housing ,Playing sports
+4/2/2024 12:10:49,Business Analytics,yes,1,mu,ja,male,yes,29/05/2000,175,no,10,10,1903,23:30,Sports,Relaxing
+4/2/2024 12:10:51,MSc Bioinformatics and system biology,yes,0,sigma,nee,female,yes,16.4,300,no,30,5,47,3 am,Good sleep,No work
+4/2/2024 12:10:51,Artificial intelligence ,yes,0,mu,nee,non-binary,yes,16-07-1998,300,no,80,8,72,01:00,Keep happy with my girlfriend,Sleep well
+4/2/2024 12:10:51,Computational Science,yes,0,mu,ja,male,yes,21-11-2001,289,no,30,4,7487964,23.54,Bouldering,Haskell
+4/2/2024 12:10:51,Computer Science (JD Master),no,0,sigma,nee,not willing to answer,not willing to say,02/10/1993,300,no,77,2,Avogadro's number,02:00 's morgens,Earning a 10 on this course,Earning $10000 a day from the stock market
+4/2/2024 12:10:52,Bioinformatics and Systems Biology,yes,0,mu,ja,female,yes,30-08,200,no,75,4,8,22.00,Seeing a golden retriever,Having fun with friends
+4/2/2024 12:10:52,Finance and Technology,yes,0,sigma,nee,male,yes,12/31/1616,500,no,101,0,74313478013427834891,22,Nothing,Nothing
+4/2/2024 12:10:52,BA,yes,1,mu,ja,male,yes,01-05-2001,300,no,40,10,7,23:30,Good sleep,Relaxing
+4/2/2024 12:10:53,MSc Computational Science,yes,0,mu,ja,male,yes,4/20/1969,500,no,69,8,80085,4am,Sex,Sex
+4/2/2024 12:10:53,AI,yes,1,mu,ja,gender fluid,no,03/04,300,no,20,2,43,1am,no class,seeing friends
+4/2/2024 12:10:54,Computer Science,no,0,unknown,nee,male,yes,25/08/2000,300,no,99,5,7,3am,Task completed,Unexpected income
+4/2/2024 12:10:55,Business Analytics,yes,1,mu,ja,male,yes,28-06-2000,350,no,-800,4,69,23:30,A kiss,Sun shining
+4/2/2024 12:10:55,MSc Artificial Intelligence,yes,1,mu,ja,female,not willing to say,11,300,no,70,12,7,00.30,food,climbing a 6b+
+4/2/2024 12:10:56,computational science,no,0,mu,ja,male,not willing to say,121198,300,no,20,15,28,1:00,"with friends, enjoy the day",have time to go to the gym
+4/2/2024 12:10:56,Msc Artificial Intelligence (UvA),yes,1,unknown,ja,male,yes,07-02-1996,200,no,70,3,37,12,When I accomplished something that I care about,Having laughs with friends or family
+4/2/2024 12:10:56,Computational Science ,no,0,mu,ja,male,yes,13 July 2001,350,no,60,10,7,23:00,Being with my friends ,Going to the gym 
+4/2/2024 12:10:57,Bioinformatics and Systems Biology,yes,1,mu,nee,female,yes,29-11-1998,250,no,20,4,4,1:00,Sleep in,Chill
+4/2/2024 12:10:58,Computer Science,yes,1,mu,ja,gender fluid,not willing to say,0327,200,no,20,3,78,10.30,Nice Eating,Good Rest
+4/2/2024 12:10:59,Computer Science,yes,0,mu,ja,male,yes,1 april,200,no,0,3,no,03:00,food,food
+4/2/2024 12:11:00,Computational Science,yes,0,mu,nee,female,yes,12/09/1999,200,no,0,10,27,00:45,Good food,Working out
+4/2/2024 12:11:01,Physics,no,0,mu,nee,not willing to answer,not willing to say,05.FEB.2001,120,yes,20,8,719,3am,Making progress compared to yesterday,To work out
+4/2/2024 12:11:02,MS AI,yes,1,mu,ja,male,yes,29th August 1999,300,no,33,6,4,3:30am,wake up early,some form of exercise
+4/2/2024 12:11:03,Computational Science,yes,0,mu,nee,male,yes,27-11-1992,300,no,25,7,3726362728283939336362627282829192937474747483829192726362628291010405958436262526272728495050548737362515162738494940403939392732622626475969695959494838337373622623495950550504948372726161615141414142526373748485959506060605948373737226161511626373748485959605038272625141415263748585969605040493827271615151415262738484959404939282277,01:00,"Food, sun, friends, wine, learning new things",Mandatory office days 
+4/2/2024 12:11:04,AI ,yes,0,mu,ja,female,yes,10-08-2002,250,no,40,5,13579,00:30 ,Sunny ,exercise 
+4/2/2024 12:11:05,Computational science ,yes,1,unknown,ja,female,yes,15/11/1993,220,no,60,1,7,23:00,Talk to friends and family,To have laughed during the day
+4/2/2024 12:11:05,Data mining techniques,yes,0,mu,nee,male,yes,08,200,no,65,7,46,1am,Positivity,Good sleep
+4/2/2024 12:11:06,MSc AI,yes,0,mu,nee,gender fluid,yes,10-11-1996,160,no,20,6,75890,01:00,Good sex,Dancing at a party
+4/2/2024 12:11:07,Artificial intelligence ,yes,1,mu,ja,female,yes,02-06-1999,150,no,80,2,7,00:30,If the weather is warm,No delays in public transport 
+4/2/2024 12:11:08,Computational Science ,yes,1,mu,ja,female,yes,06-11-2000,350,no,30,8,18,23:30,Nice weather,Being with friends and family
+4/2/2024 12:11:09,Computational Science,no,0,mu,nee,female,not willing to say,0710,400,no,10,6,17,3.20,good food,keep winning hearthstone battleground
+4/2/2024 12:11:09,Artificial Intelligence,yes,unknown,mu,ja,female,yes,03-03-1998,250,no,35.5,1.5,67,1 AM,Having nothing to worry about ,Doing the things that I like 
+4/2/2024 12:11:10,FinTech,yes,0,mu,ja,male,yes,20.11.1897,200,no,10,10,-2,11h05,Good sleep,No university
+4/2/2024 12:11:13,computer science,yes,0,mu,ja,male,yes,11/20,150,yes,70,5,69,00：00,kiss,shopping
+4/2/2024 12:11:14,Computational Science Master,yes,0,mu,nee,male,yes,Jan 12,114,no,40,7,-2,1:20,Love,Music
+4/2/2024 12:11:14,Finance and technology ,yes,unknown,mu,nee,male,not willing to say,29-05-200,200,no,30,8,3.14,23:07,Social activity ,Sports 
+4/2/2024 12:11:15,computational sciences ,yes,0,mu,nee,female,yes,12-10-2001,210,no,60,5,865,12:15 am ,good food ,no school 
+4/2/2024 12:11:15,AI,yes,0,mu,ja,male,yes,26/08/1988,220,no,77,0,29,7 am,Study,Organized 
+4/2/2024 12:11:15,Business Analytics,yes,1,mu,ja,female,yes,25-07-2002,250,no,0,9,74364789532,23:00,Sunshine,Friends 
+4/2/2024 12:11:16,Internet and Web Technologies ,yes,1,sigma,ja,male,yes,14,80,no,5,10,8,10:30,Date with a girl,Binge watching a TV show
+4/2/2024 12:11:16,Econometrics,no,0,mu,nee,male,yes,13/06/2000,350,no,10,15,13,23:04,"Good sleep, Rowing and being productive","Good sleep, chillings and eating good"
+4/2/2024 12:11:18,AI,yes,0,mu,ja,female,yes,05-04-2000,300,no,70,2,6,1:28,sleep 8h,went to gym
+4/2/2024 12:11:23,Bioinformatics,yes,unknown,mu,ja,male,yes,16-11-1999,200,no,100,3,420,1 am,Beer,Beer
+4/2/2024 12:11:23,Business Analytics ,yes,0,mu,nee,female,yes,"May 4, 2000",225,no,65,0,200000007,1:43,Work during the day and see my friends in the evening,"Going outside, eating good food, getting some work done, seeing people I know, drinking"
+4/2/2024 12:11:24,Artificial Intelligence,yes,1,mu,ja,male,yes,02-10-2000,450,no,30,6,2564803,2am,If I can decide for myself what I want to do during the day,If I have a fun social activity in the evening
+4/2/2024 12:11:29,Finance and Technology,yes,0,mu,nee,male,yes,07/10/1997,300,no,52,10,752169420587,00:50,Low stress,Sunny weather
+4/2/2024 12:11:30,Computer Science,yes,1,mu,ja,male,no,1-1-2002,300,no,20,2,582819464919263,0:00,-,-
+4/2/2024 12:11:32,Computer science(joint,yes,1,mu,ja,female,not willing to say,21-06,250,no,75,3,21,00:30,Good sleep,Delicious food 
+4/2/2024 12:11:34,bioinformatics,yes,0,unknown,nee,male,yes,2001 03 29,200,no,1000000000000,5,29,3 AM,good weather,good grades
+4/2/2024 12:11:35,MPA,no,0,unknown,nee,female,yes,18-01-2001,200,no,70,5,8,01:30,Nice food,Nice weather
+4/2/2024 12:11:35,AI,yes,1,mu,ja,female,not willing to say,29-07-2002,300,no,20,5,77,23:00,Sun,Dinner with friends
+4/2/2024 12:11:35,MSc Bioinformatics,yes,0,mu,nee,non-binary,yes,why do you need to know,4,no,105,57,42,6am,alex going to brussels on my birthday,fun lectures at 9am
+4/2/2024 12:11:40,Business Analytics,yes,1,sigma,ja,male,yes,28-11-1997,430,no,0,6,21,23:30,Weed,Sun
+4/2/2024 12:11:40,Bioinformatics and Systems Biology ,yes,0,mu,ja,gender fluid,yes,17/3/1995,110,no,87,0,563912,2:30,Alcohol,Seeing friends
+4/2/2024 12:11:41,Bioinformatics & Systems Biology,yes,1,unknown,ja,female,no,24-01-1998,335,no,45,4,1789,2:00,Time with friends ,Enough time for relaxation
+4/2/2024 12:11:42,computer science,yes,unknown,unknown,ja,female,not willing to say,2000.8.10,190,unknown,80,1,810,2am,No assignment,No presentation
+4/2/2024 12:11:44,Computational science,yes,0,mu,nee,not willing to answer,yes,2000/04/15,300,no,1,2,7777777777,3am,perfect sleep,delicious food
+4/2/2024 12:11:45,Artificial Intelligence,yes,0,mu,nee,male,yes,10-08-2000,325,no,15,9,1309,23:00,Sports,Food
+4/2/2024 12:11:51,Artificial intelligence ,yes,0,mu,nee,male,yes,10/11,300,no,30,4,73,1 am,Finish all the things need to be done ,Cooking a delicious meal 
+4/2/2024 12:11:52,AI,yes,0,sigma,nee,male,yes,2000,200,no,999,632,1,150,Peepee,Poopoo
+4/2/2024 12:11:53,Econometrics & Operations Research,no,0,mu,nee,female,yes,18-10-2000,245,no,0,3,144,23:30,Good weather,Being with my friends and/or family
+4/2/2024 12:11:56,MSc AI,yes,1,mu,ja,male,yes,14-9-1419,175,no,10,8,61,04:00,Praying,Gratitude
+4/2/2024 12:11:56,Artificial intelligence,yes,1,mu,ja,male,no,02/11,269,no,42.69,8,3,00:35,Sunny weather,Lots of free time
+4/2/2024 12:11:57,Computer Science,yes,1,mu,ja,male,no,07-06-1998,270,no,10,6,69,2:30,No obligations,Seeing friends
+4/2/2024 12:12:00,I am in the masters Artificial Intelligence at the University of Amsterdam,yes,1,unknown,ja,male,yes,16-04-1999,Two hundred fifty,no,22.5,3,π,1 o clock ,"Good weather, for example when the sun is shining at about 25 degrees celcius",Cozy movie watching on a rainy day
+4/2/2024 12:12:03,MPA,no,0,unknown,ja,male,yes,15-04-2001,300,no,60,5,7,23:30,Sunny weather,Spending time with friends
+4/2/2024 12:12:06,Computer Security,yes,1,mu,ja,male,yes,14/09/1997,250,no,60,3,314,2,A p-value << 0.05,Winning the lottery
+4/2/2024 12:12:06,BiSB,yes,0,sigma,nee,female,yes,12-05,300,no,80,0,7,4am,no assignment,sunny day
+4/2/2024 12:12:07,Computer science ,yes,0,mu,ja,male,yes,23 August 2002,200,no,0,7,617848429,04:00 ,Talking to my girlfriend,Eating authentic indian food
+4/2/2024 12:12:07,Business Analytics,yes,0,mu,ja,female,yes,01-05-2001,200,no,20,2,78,00:30,Joy,Fun
+4/2/2024 12:12:09,Master Business Analytics,yes,1,mu,ja,male,yes,15-11-1999,242,no,15,10,9005,10:30,Sun,Smilling People
+4/2/2024 12:12:11,Bioinformatics,yes,1,mu,nee,female,yes,4.20,200,no,99,5,636,3,Food,Game
+4/2/2024 12:12:11,AI,yes,1,mu,ja,male,yes,07-12-1997,150,no,55,8,68,22:30,Sleep,Excercise
+4/2/2024 12:12:15,Msc AI ,yes,0,unknown,ja,male,yes,07.07.01,153,no,0,5,6174,3,good food,sleeping
+4/2/2024 12:12:16,Data mining,yes,0,mu,nee,female,yes,09/12/1990,Around200,no,99,3,6990,2 o'clock,Kindness,Weather
+4/2/2024 12:12:17,Msc Bioinformatics & Systems Biology,yes,0,mu,ja,female,yes,13-02-1999,263,no,0,7,13,03:07 ,When I am able to sport,When the sun shines 
+4/2/2024 12:12:17,Computational Science,yes,0,mu,nee,male,yes,22-04,250,no,0,4,6,23:30,No stress,Being happy
+4/2/2024 12:12:21,computer science,no,0,mu,ja,female,yes,21-07-2000,150,no,75,2,831,1 a.m.,love,game
+4/2/2024 12:12:30,Bioinformatics and Systems Biology,yes,0,mu,nee,male,not willing to say,29/05/2002,150,no,0,6,42,02:00,achievements,easy cycling
+4/2/2024 12:12:33,Business Analytics,yes,1,mu,ja,female,yes,26-01-2003,250,no,20,1,9,23.30,Sunshine,Having good food
+4/2/2024 12:12:37,Master of Finance Duisenberg Honours Program: Quantitative Risk Management ,no,unknown,unknown,nee,male,yes,13/03/1999,110,no,80,4,72,03:00,Good weather (Sunny) ,Achieve my personal goals
+4/2/2024 12:12:38,MSc Bioinformatics and Systems Biology,yes,0,mu,nee,male,yes,06.09.1999,280,no,31,7,31,12.00,"Food, gym, friends",-
+4/2/2024 12:12:38,Computer Science ,yes,0,mu,nee,male,no,26/12/1997,187,yes,99,0,1012708299,2.01,coffee,sleep
+4/2/2024 12:12:48,Econometrics & Operations research ,no,0,mu,nee,female,yes,06/06/2001,276,no,0,4,11,23:33,Sun,Good food
+4/2/2024 12:13:19,Computer Science-Track software engineering ,no,1,unknown,ja,female,not willing to say,26 November 1998,200,no,90,1,7,11:36,A day that I feel useful and happiness ,A day that I feel useful and happiness 
+4/2/2024 12:13:20,AI,yes,1,sigma,ja,male,yes,29/8/1998,250,no,10,12,34,23:15,A good coffee after a good gym session,Time free to be productive at home 
+4/2/2024 12:13:21,Software Engineering and Green IT,yes,1,mu,ja,female,yes,31-Jan-1982,400,no,10,4,45,Yes,Accomplishment,Meeting objectives 
+4/2/2024 12:13:41,CS,yes,0,sigma,ja,not willing to answer,yes,6-22,400,unknown,80,0,114514,1:05,sleep well,holidays
+4/2/2024 12:13:46,Data mining,no,0,unknown,ja,female,yes,27-03-2001,120,no,0.5,0.5,4580625207841489679541,2,If my chrush likes me back,Sunny day
+4/2/2024 12:14:08,Econometrics & operations Research,yes,0,sigma,ja,male,yes,27/02/1998,269,no,63,11,"3,141,592,653",22:45,When I have done some exercise along with a successful day of studying,When I get to meet up with some friends
+4/2/2024 12:14:14,Bioinformatics and Systems Biology,yes,0,mu,nee,gender fluid,not willing to say,04,220,no,1,2,01001010,0100,Looking at a mirror,Looking at a selfie
+4/2/2024 12:14:16,Econometrics and Operations research,unknown,1,sigma,ja,male,yes,14 may 2001,189,no,56,5,2.78,23:30,If i have a relatively relaxing but productive day,If the stockmarket goes up
+4/2/2024 12:14:56,Data mining techniques ,yes,0,sigma,nee,female,yes,27.06.1998,365,no,34,1,36952,23,"Staying home, with food","Staying home, with food, playing games"
+4/2/2024 12:15:12,Python,yes,unknown,unknown,ja,male,yes,17-05-2000,200,unknown,60,6,6,23:30,Sucess,Food
+4/2/2024 12:22:58,Computer Science,no,0,sigma,ja,female,yes,26-08-1999,150,no,60,3,7,2:15,Nice food,Good sleep
