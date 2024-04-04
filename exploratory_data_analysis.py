@@ -16,7 +16,6 @@ def clean(df):
     df.columns = column_names
 
     # Clean column major
-    print(df.loc[:, "major"].to_string())
     ai_master = df.loc[:, "major"].str.contains(r"AI")
     ai_master = ai_master | df.loc[:, "major"].str.match(re.compile("ai", re.IGNORECASE))
     ai_master = ai_master | df.loc[:, "major"].str.contains(
@@ -24,7 +23,8 @@ def clean(df):
 
     cs_master = df.loc[:, "major"].str.contains(r"CS")
     cs_master = cs_master | df.loc[:, "major"].str.contains(re.compile("Computer Science|big data engineering|"
-                                                                       "software engineering|green it|computing and concurrency|"
+                                                                       "software engineering|green it|"
+                                                                       "computing and concurrency|"
                                                                        "computer systems", re.IGNORECASE))
     cls_master = df.loc[:, "major"].str.contains(r"CLS")
     cls_master = cls_master | df.loc[:, "major"].str.contains(re.compile("computational science", re.IGNORECASE))
@@ -38,17 +38,17 @@ def clean(df):
     assert not any(cls_master & ai_master & cs_master & bioinformatics), "some strings match multiple master categories"
     for i in df.index:
         if ai_master[i]:
-            df.major_cleaned[i] = "AI"
+            df.loc[i,"major_cleaned"] = "AI"
         if cs_master[i]:
-            df.major_cleaned[i] = "CS"
+            df.loc[i,"major_cleaned"] = "CS"
         if cls_master[i]:
-            df.major_cleaned[i] = "CLS"
+            df.loc[i,"major_cleaned"] = "CLS"
         if bioinformatics[i]:
-            df.major_cleaned[i] = "bioinformatics"
+            df.loc[i,"major_cleaned"] = "bioinformatics"
         if business_analytics[i]:
-            df.major_cleaned[i] = "businessAnalytics"
+            df.loc[i,"major_cleaned"] = "businessAnalytics"
 
-    print(df["major_cleaned"].value_counts())
+    print("Number of students per major: \n", df["major_cleaned"].value_counts())
 
     # ignore column birth date, too complicated
 
@@ -59,6 +59,7 @@ def clean(df):
     # aso.
     # 23 means "22:01 - 23:00"
     # 0 means "23:01 - 00:00"
+    # -1 means "not recoverable or meaningful or missing value"
     bedtimes = [1, 1, 0, 2, 0, 23, 0, 3, 1, 1, 23, 5, 0, 2, 18, 0, 3, 2, 0, 0, 1, 2, 0, 1, 22, 4, 0, 0, 2, 23, 4, 23, 1,
                 2, 1, 2, 12, 1, 1, 5, 2, 22, 0, 1, 21, 0, 4, 3, 0, 0, 1, 3,2, 1, 0, 1, 0, 0, 2, 2, 2, 0, 2, 1, 1, 12, 4,
                 3, 23, 23, 0, 0, 3, 3, 6, 1, 3, 4, 1, 1, 22, 2, 2, 1, 0, 2, 5, 3, 0, 1, 2, 23, 22, 1, 1, 0, 1, 1, 3, 1,
@@ -70,8 +71,25 @@ def clean(df):
     df["bedtimes_cleaned"] = bedtimes
 
     # clean column sports
+    print("Raw number of sport hours mentioned: \n", df["sport_hours"].value_counts())
+    df["sport_cleaned"] = df["sport_hours"]
+    df[df["sport_cleaned"] == "6 hours"] = "6"
+    df[df["sport_cleaned"] == "Whole 50"] = "50"
+    df[df["sport_cleaned"] == "1/2"] = "0.5"
+    df[df["sport_cleaned"] == "geen"] = "0"
+    df[df["sport_cleaned"] == "2-4"] = "3"
+    df["sport_cleaned"] = pd.to_numeric(df.loc[:, "sport_cleaned"])
 
-    # remove outliers
+    # remove outliers column sport:
+    # remove impossible values 632 (90 hours per day) and 57 (8 hours per day) and 50 (7 hours per day)
+    df[df["sport_cleaned"] == 632.0] = pd.NA
+    df[df["sport_cleaned"] == 57.0] = pd.NA
+    df[df["sport_cleaned"] == 50.0] = pd.NA
+
+    print("Distribution of number of sport hours cleaned: \n", df["sport_cleaned"].value_counts())
+
+    # clean column stress level
+    
 
 
 if __name__ == '__main__':
