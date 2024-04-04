@@ -48,7 +48,7 @@ def clean(df):
         if business_analytics[i]:
             df.loc[i,"major_cleaned"] = "businessAnalytics"
 
-    print("Number of students per major: \n", df["major_cleaned"].value_counts())
+    print("Number of students per major: \n", df["major_cleaned"].value_counts(dropna=False))
 
     # ignore column birth date, too complicated
 
@@ -71,7 +71,7 @@ def clean(df):
     df["bedtimes_cleaned"] = bedtimes
 
     # clean column sports
-    print("Raw number of sport hours mentioned: \n", df["sport_hours"].value_counts())
+    #print("Raw number of sport hours mentioned: \n", df["sport_hours"].value_counts())
     df["sport_cleaned"] = df["sport_hours"]
     df[df["sport_cleaned"] == "6 hours"] = "6"
     df[df["sport_cleaned"] == "Whole 50"] = "50"
@@ -86,10 +86,17 @@ def clean(df):
     df[df["sport_cleaned"] == 57.0] = pd.NA
     df[df["sport_cleaned"] == 50.0] = pd.NA
 
-    print("Distribution of number of sport hours cleaned: \n", df["sport_cleaned"].value_counts())
+    print("Distribution of number of sport hours cleaned: \n", df["sport_cleaned"].value_counts(dropna=False))
 
     # clean column stress level
-    
+    #print("Raw Stress level : \n", df["stress_level"].value_counts().to_string())
+    # remove impossible values < 0 or > 100
+    df["stress_cleaned"] = df["stress_level"]
+    df["stress_cleaned"] = pd.to_numeric(df.loc[:,"stress_cleaned"])
+    df[(df["stress_cleaned"] < 0) | (df["stress_cleaned"] > 100)] = pd.NA
+    print("Stress level cleaned: \n", df["stress_cleaned"].value_counts(dropna=False).to_string())
+
+
 
 
 if __name__ == '__main__':
