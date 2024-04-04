@@ -96,6 +96,18 @@ def clean(df):
     df[(df["stress_cleaned"] < 0) | (df["stress_cleaned"] > 100)] = pd.NA
     print("Stress level cleaned: \n", df["stress_cleaned"].value_counts(dropna=False).to_string())
 
+    # clean column estimate number of students
+    #print("Raw no students estimate : \n", df["no_students"].value_counts(dropna=False).to_string())
+    df["no_students_cleaned"] = df["no_students"]
+    df[df["no_students_cleaned"] == "Two hundred fifty"] = "250"
+    df[df["no_students_cleaned"] == "Around200"] = "200"
+    df[df["no_students_cleaned"] == "~280"] = "280"
+    df[df["no_students_cleaned"] == "1 million"] = "1000000"
+    df["no_students_cleaned"] = pd.to_numeric(df.loc[:,"no_students_cleaned"])
+    # Remove impossible and silly values (< 20 or > 1000)
+    df[(df["no_students_cleaned"] < 20) | (df["no_students_cleaned"] > 1000)] = pd.NA
+    print("Cleaned no students estimate : \n", df["no_students_cleaned"].value_counts(dropna=False).to_string())
+
 
 
 
