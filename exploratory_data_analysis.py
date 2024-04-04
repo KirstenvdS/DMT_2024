@@ -69,22 +69,30 @@ def clean(df):
                 2, 23, 6, 0, 3, 2, 2, 3, 23, 1, -1, 0, 4, 1, 3, 1, 0, 2, 4, 4, 1, 23, 3, 23, 3, 2, 4, 0, 1, 2, 0, 3, 0,
                 3, 0, 0, 0, -1, 2, 2, 23, 1, 0, 23, 0, 3]
     df["bedtimes_cleaned"] = bedtimes
+    # remove non-sensical data, anything between 6-19 o'clock makes no sense
+    df.loc[np.isin(df["bedtimes_cleaned"], range(6,19)), "bedtimes_cleaned"] = pd.NA
+    df.loc[df["bedtimes_cleaned"] == -1, "bedtimes_cleaned"] = pd.NA
+    print("Bedtime cleaned: \n", df["bedtimes_cleaned"].value_counts(dropna=False).to_string())
+
+    # Gone to bed late? 1-5 AM
+    df["bed_late"] = np.isin(df["bedtimes_cleaned"], range(1,6))
+    print("Gone to bed late? \n", df["bed_late"].value_counts(dropna=False).to_string())
 
     # clean column sports
     #print("Raw number of sport hours mentioned: \n", df["sport_hours"].value_counts())
     df["sport_cleaned"] = df["sport_hours"]
-    df[df["sport_cleaned"] == "6 hours"] = "6"
-    df[df["sport_cleaned"] == "Whole 50"] = "50"
-    df[df["sport_cleaned"] == "1/2"] = "0.5"
-    df[df["sport_cleaned"] == "geen"] = "0"
-    df[df["sport_cleaned"] == "2-4"] = "3"
+    df.loc[df["sport_cleaned"] == "6 hours", "sport_cleaned"] = "6"
+    df.loc[df["sport_cleaned"] == "Whole 50","sport_cleaned"] = "50"
+    df.loc[df["sport_cleaned"] == "1/2", "sport_cleaned"] = "0.5"
+    df.loc[df["sport_cleaned"] == "geen", "sport_cleaned"] = "0"
+    df.loc[df["sport_cleaned"] == "2-4", "sport_cleaned"] = "3"
     df["sport_cleaned"] = pd.to_numeric(df.loc[:, "sport_cleaned"])
 
     # remove outliers column sport:
     # remove impossible values 632 (90 hours per day) and 57 (8 hours per day) and 50 (7 hours per day)
-    df[df["sport_cleaned"] == 632.0] = pd.NA
-    df[df["sport_cleaned"] == 57.0] = pd.NA
-    df[df["sport_cleaned"] == 50.0] = pd.NA
+    df.loc[df["sport_cleaned"] == 632.0, "sport_cleaned"] = pd.NA
+    df.loc[df["sport_cleaned"] == 57.0, "sport_cleaned"] = pd.NA
+    df.loc[df["sport_cleaned"] == 50.0, "sport_cleaned"] = pd.NA
 
     print("Distribution of number of sport hours cleaned: \n", df["sport_cleaned"].value_counts(dropna=False))
 
@@ -93,25 +101,37 @@ def clean(df):
     # remove impossible values < 0 or > 100
     df["stress_cleaned"] = df["stress_level"]
     df["stress_cleaned"] = pd.to_numeric(df.loc[:,"stress_cleaned"])
-    df[(df["stress_cleaned"] < 0) | (df["stress_cleaned"] > 100)] = pd.NA
+    df.loc[(df["stress_cleaned"] < 0) | (df["stress_cleaned"] > 100), "stress_cleaned"] = pd.NA
     print("Stress level cleaned: \n", df["stress_cleaned"].value_counts(dropna=False).to_string())
 
     # clean column estimate number of students
-    #print("Raw no students estimate : \n", df["no_students"].value_counts(dropna=False).to_string())
+    print("Raw no students estimate : \n", df["no_students"].value_counts(dropna=False).to_string())
     df["no_students_cleaned"] = df["no_students"]
-    df[df["no_students_cleaned"] == "Two hundred fifty"] = "250"
-    df[df["no_students_cleaned"] == "Around200"] = "200"
-    df[df["no_students_cleaned"] == "~280"] = "280"
-    df[df["no_students_cleaned"] == "1 million"] = "1000000"
+    df.loc[df["no_students_cleaned"] == "Two hundred fifty", "no_students_cleaned"] = "250"
+    df.loc[df["no_students_cleaned"] == "Around200", "no_students_cleaned"] = "200"
+    df.loc[df["no_students_cleaned"] == "3thousand", "no_students_cleaned"] = "3000"
+    df.loc[df["no_students_cleaned"] == "~280", "no_students_cleaned"] = "280"
+    df.loc[df["no_students_cleaned"] == "150-200", "no_students_cleaned"] = "175"
+    df.loc[df["no_students_cleaned"] == "over 9000", "no_students_cleaned"] = "9000"
+    df.loc[df["no_students_cleaned"] == "Around 200", "no_students_cleaned"] = "200"
+    df.loc[df["no_students_cleaned"] == "1 million", "no_students_cleaned"] = "1000000"
     df["no_students_cleaned"] = pd.to_numeric(df.loc[:,"no_students_cleaned"])
+
     # Remove impossible and silly values (< 20 or > 1000)
-    df[(df["no_students_cleaned"] < 20) | (df["no_students_cleaned"] > 1000)] = pd.NA
+    df.loc[(df["no_students_cleaned"] < 20) | (df["no_students_cleaned"] > 1000), "no_students_cleaned"] = pd.NA
     print("Cleaned no students estimate : \n", df["no_students_cleaned"].value_counts(dropna=False).to_string())
 
+    # return new dataframe
+    return df
 
+def explore_data(df):
+    subdf = df[["stress_cleaned", "sport_cleaned", "bed_late", "no_students_cleaned"]]
+    print(subdf.corr(numeric_only=True).to_string())
+    return
 
 
 if __name__ == '__main__':
     # load in data file
     data = pd.read_csv('ODI-2024.csv')
-    clean(data)
+    data = clean(data)
+    explore_data(data)
