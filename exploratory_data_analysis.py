@@ -4,6 +4,17 @@ import csv
 import matplotlib.pyplot as plt
 import pandas as pd
 import re
+from dateutil.parser import parse
+
+
+def birthyear(s):
+    # get year from fuzzy birthday string
+    x = 0
+    try:
+        x = parse(s, fuzzy=True).year
+    except:
+        print("Year not found in string!")
+    return x
 
 
 def clean(df):
@@ -38,17 +49,17 @@ def clean(df):
     assert not any(cls_master & ai_master & cs_master & bioinformatics), "some strings match multiple master categories"
     for i in df.index:
         if ai_master[i]:
-            df.loc[i,"major_cleaned"] = "AI"
+            df.loc[i, "major_cleaned"] = "AI"
         if cs_master[i]:
-            df.loc[i,"major_cleaned"] = "CS"
+            df.loc[i, "major_cleaned"] = "CS"
         if cls_master[i]:
-            df.loc[i,"major_cleaned"] = "CLS"
+            df.loc[i, "major_cleaned"] = "CLS"
         if bioinformatics[i]:
-            df.loc[i,"major_cleaned"] = "bioinformatics"
+            df.loc[i, "major_cleaned"] = "bioInf"
         if business_analytics[i]:
-            df.loc[i,"major_cleaned"] = "businessAnalytics"
+            df.loc[i, "major_cleaned"] = "BA"
 
-    print("Number of students per major: \n", df["major_cleaned"].value_counts(dropna=False))
+    # print("Number of students per major: \n", df["major_cleaned"].value_counts(dropna=False))
 
     # ignore column birth date, too complicated
 
@@ -61,7 +72,8 @@ def clean(df):
     # 0 means "23:01 - 00:00"
     # -1 means "not recoverable or meaningful or missing value"
     bedtimes = [1, 1, 0, 2, 0, 23, 0, 3, 1, 1, 23, 5, 0, 2, 18, 0, 3, 2, 0, 0, 1, 2, 0, 1, 22, 4, 0, 0, 2, 23, 4, 23, 1,
-                2, 1, 2, 12, 1, 1, 5, 2, 22, 0, 1, 21, 0, 4, 3, 0, 0, 1, 3,2, 1, 0, 1, 0, 0, 2, 2, 2, 0, 2, 1, 1, 12, 4,
+                2, 1, 2, 12, 1, 1, 5, 2, 22, 0, 1, 21, 0, 4, 3, 0, 0, 1, 3, 2, 1, 0, 1, 0, 0, 2, 2, 2, 0, 2, 1, 1, 12,
+                4,
                 3, 23, 23, 0, 0, 3, 3, 6, 1, 3, 4, 1, 1, 22, 2, 2, 1, 0, 2, 5, 3, 0, 1, 2, 23, 22, 1, 1, 0, 1, 1, 3, 1,
                 1, 0, 0, 0, 2, 22, 23, 2, 2, 23, 4, 0, 2, 18, 23, 0, 2, 1, 1, 3, 2, 1, 0, 0, 1, 2, 3, 1, 0, 0, 14, 1, 1,
                 1, 3, 7, 0, 19, 2, 23, 2, 2, 2, 2, 3, 1, 0, 2, 0, 23, 22, 0, 3, 1, 0, 2, 22, 22, 0, 4, 1, 3, 0, 1, 1, 0,
@@ -70,19 +82,19 @@ def clean(df):
                 3, 0, 0, 0, -1, 2, 2, 23, 1, 0, 23, 0, 3]
     df["bedtimes_cleaned"] = bedtimes
     # remove non-sensical data, anything between 6-19 o'clock makes no sense
-    df.loc[np.isin(df["bedtimes_cleaned"], range(6,19)), "bedtimes_cleaned"] = pd.NA
+    df.loc[np.isin(df["bedtimes_cleaned"], range(6, 19)), "bedtimes_cleaned"] = pd.NA
     df.loc[df["bedtimes_cleaned"] == -1, "bedtimes_cleaned"] = pd.NA
-    print("Bedtime cleaned: \n", df["bedtimes_cleaned"].value_counts(dropna=False).to_string())
+    # print("Bedtime cleaned: \n", df["bedtimes_cleaned"].value_counts(dropna=False).to_string())
 
     # Gone to bed late? 1-5 AM
-    df["bed_late"] = np.isin(df["bedtimes_cleaned"], range(1,6))
-    print("Gone to bed late? \n", df["bed_late"].value_counts(dropna=False).to_string())
+    df["bed_late"] = np.isin(df["bedtimes_cleaned"], range(1, 6))
+    # print("Gone to bed late? \n", df["bed_late"].value_counts(dropna=False).to_string())
 
     # clean column sports
-    #print("Raw number of sport hours mentioned: \n", df["sport_hours"].value_counts())
+    # print("Raw number of sport hours mentioned: \n", df["sport_hours"].value_counts())
     df["sport_cleaned"] = df["sport_hours"]
     df.loc[df["sport_cleaned"] == "6 hours", "sport_cleaned"] = "6"
-    df.loc[df["sport_cleaned"] == "Whole 50","sport_cleaned"] = "50"
+    df.loc[df["sport_cleaned"] == "Whole 50", "sport_cleaned"] = "50"
     df.loc[df["sport_cleaned"] == "1/2", "sport_cleaned"] = "0.5"
     df.loc[df["sport_cleaned"] == "geen", "sport_cleaned"] = "0"
     df.loc[df["sport_cleaned"] == "2-4", "sport_cleaned"] = "3"
@@ -90,22 +102,25 @@ def clean(df):
 
     # remove outliers column sport:
     # remove impossible values 632 (90 hours per day) and 57 (8 hours per day) and 50 (7 hours per day)
-    df.loc[df["sport_cleaned"] == 632.0, "sport_cleaned"] = pd.NA
-    df.loc[df["sport_cleaned"] == 57.0, "sport_cleaned"] = pd.NA
-    df.loc[df["sport_cleaned"] == 50.0, "sport_cleaned"] = pd.NA
+    # remove whole row because did not answer honestly
+    df.loc[df["sport_cleaned"] == 632.0, :] = pd.NA
+    df.loc[df["sport_cleaned"] == 57.0, :] = pd.NA
+    df.loc[df["sport_cleaned"] == 50.0, :] = pd.NA
 
-    print("Distribution of number of sport hours cleaned: \n", df["sport_cleaned"].value_counts(dropna=False))
+    # print("Distribution of number of sport hours cleaned: \n", df["sport_cleaned"].value_counts(dropna=False))
 
     # clean column stress level
-    #print("Raw Stress level : \n", df["stress_level"].value_counts().to_string())
+    # print("Raw Stress level : \n", df["stress_level"].value_counts().to_string())
     # remove impossible values < 0 or > 100
     df["stress_cleaned"] = df["stress_level"]
-    df["stress_cleaned"] = pd.to_numeric(df.loc[:,"stress_cleaned"])
-    df.loc[(df["stress_cleaned"] < 0) | (df["stress_cleaned"] > 100), "stress_cleaned"] = pd.NA
-    print("Stress level cleaned: \n", df["stress_cleaned"].value_counts(dropna=False).to_string())
+    df["stress_cleaned"] = pd.to_numeric(df.loc[:, "stress_cleaned"])
+
+    # Delete impossible values everywhere because did not answer honestly
+    df.loc[(df["stress_cleaned"] < 0) | (df["stress_cleaned"] > 100), :] = pd.NA
+    # print("Stress level cleaned: \n", df["stress_cleaned"].value_counts(dropna=False).to_string())
 
     # clean column estimate number of students
-    print("Raw no students estimate : \n", df["no_students"].value_counts(dropna=False).to_string())
+    # print("Raw no students estimate : \n", df["no_students"].value_counts(dropna=False).to_string())
     df["no_students_cleaned"] = df["no_students"]
     df.loc[df["no_students_cleaned"] == "Two hundred fifty", "no_students_cleaned"] = "250"
     df.loc[df["no_students_cleaned"] == "Around200", "no_students_cleaned"] = "200"
@@ -115,19 +130,77 @@ def clean(df):
     df.loc[df["no_students_cleaned"] == "over 9000", "no_students_cleaned"] = "9000"
     df.loc[df["no_students_cleaned"] == "Around 200", "no_students_cleaned"] = "200"
     df.loc[df["no_students_cleaned"] == "1 million", "no_students_cleaned"] = "1000000"
-    df["no_students_cleaned"] = pd.to_numeric(df.loc[:,"no_students_cleaned"])
+    df["no_students_cleaned"] = pd.to_numeric(df.loc[:, "no_students_cleaned"])
 
-    # Remove impossible and silly values (< 20 or > 1000)
-    df.loc[(df["no_students_cleaned"] < 20) | (df["no_students_cleaned"] > 1000), "no_students_cleaned"] = pd.NA
+    # Remove impossible and silly values (< 20 or > 600)
+    # remove whole row because did not answer honestly
+    df.loc[(df["no_students_cleaned"] < 20) | (df["no_students_cleaned"] > 600), :] = pd.NA
     print("Cleaned no students estimate : \n", df["no_students_cleaned"].value_counts(dropna=False).to_string())
+
+    true_n_students = len(df)
+    df["SE_no_students"] = abs(df.loc[:, "no_students_cleaned"] - true_n_students) ** 2
+
+    # age
+    df["birthyear"] = df['birthday'].apply(birthyear)
+    df["age"] = 2024 - df["birthyear"]
+    df.loc[(df["age"] < 18) | (df["age"] > 80), "age"] = pd.NA
+    print(df.loc[:,"age"].value_counts(dropna=False))
 
     # return new dataframe
     return df
 
+
 def explore_data(df):
     subdf = df[["stress_cleaned", "sport_cleaned", "bed_late", "no_students_cleaned"]]
     print(subdf.corr(numeric_only=True).to_string())
-    return
+
+    # major and stress: CS more stressed than others
+    df.boxplot(column="stress_cleaned", by="major_cleaned")
+    # plt.show()
+
+    # major and hours of sport?
+    df.boxplot(column="sport_cleaned", by="major_cleaned")
+    # plt.show()
+
+    df.plot.scatter(x="sport_cleaned", y="stress_cleaned")
+    # plt.show()
+
+    df.plot.scatter(x="bedtimes_cleaned", y="stress_cleaned")
+    # plt.show()
+
+    df.boxplot(column="stress_cleaned", by="gender")
+    # plt.show()
+
+    print(df.loc[:, "gender"].value_counts(dropna=False))
+    df.hist(column="stress_cleaned", by="bed_late")
+    # plt.show()
+
+    df.boxplot(column="sport_cleaned", by="bed_late")
+    # plt.show()
+
+    df.hist(column="bedtimes_cleaned", by="major_cleaned")
+    # plt.show()
+
+    # interesting! AI estimates better than others
+    df.hist(column="SE_no_students", by="gender")
+    # plt.show()
+
+    df.plot.scatter(x="SE_no_students", y="stress_cleaned")
+    # plt.show()
+
+    # standing up does not help with estimating number of students
+    df.boxplot(column="SE_no_students", by="stand_up")
+
+    # How many stood up?
+    print(df.loc[:, "stand_up"].value_counts(dropna=False))
+
+    df.boxplot(column="stress_cleaned", by="used_chatgpt")
+    #plt.show()
+    print(df.loc[:, "used_chatgpt"].value_counts(dropna=False))
+
+    df.hist(column="age")
+    plt.show()
+
 
 
 if __name__ == '__main__':
