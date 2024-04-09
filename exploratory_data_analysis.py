@@ -121,6 +121,7 @@ def clean(df):
     df.loc[(df["no_students_cleaned"] < 20) | (df["no_students_cleaned"] > 1000), "no_students_cleaned"] = pd.NA
     print("Cleaned no students estimate : \n", df["no_students_cleaned"].value_counts(dropna=False).to_string())
 
+
     # return new dataframe
     return df
 
@@ -129,9 +130,48 @@ def explore_data(df):
     print(subdf.corr(numeric_only=True).to_string())
     return
 
+def clean_classification(data):
+    data_copy = data.copy()
+
+    # create copy with only lowercase letters in strings
+    data_copy["good_day_1"] = data_copy["good_day_1"].astype("string")
+    data_copy["good_day_2"] = data_copy["good_day_2"].astype("string")
+    data_copy["good_day_1"] = data_copy["good_day_1"].str.lower()
+    data_copy["good_day_2"] = data_copy["good_day_2"].str.lower()
+
+    # dictionary of all categories and buzzwords
+    all_buzzwords = {
+        'social': "friend|social|family|sex",
+        'weather': "weather|sun|sky",
+        'health': "sports|gym|sleep",
+        'food': "brownie|food|coffee|water|bread",
+        'mental_health': "stress|mental|relax",
+        'sleep': 'sleep'
+    }
+
+    # code checks whether buzzwords are in the string per column and then adds the booleans
+    for category in all_buzzwords.keys():
+        data_copy["A"] = data_copy["good_day_1"].str.contains(all_buzzwords[category])
+        data_copy["B"] = data_copy["good_day_2"].str.contains(all_buzzwords[category])
+        data_copy['happy_' + category] = data_copy["A"] + data_copy["B"]
+        data_copy = data_copy.drop(["A", "B"], axis=1)
+
+    # create stressed/not stressed boolean
+    data_copy['stressed'] = np.where(data_copy['stress_level'] > 50, True, False)
+
+    #print(data.corr(numeric_only=True).to_string())
+    return data_copy
+
+    
+
 
 if __name__ == '__main__':
     # load in data file
     data = pd.read_csv('ODI-2024.csv')
     data = clean(data)
+    data = clean_classification(data)
     explore_data(data)
+    
+
+
+#print(data)
