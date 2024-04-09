@@ -145,7 +145,8 @@ def clean_classification(data):
         'weather': "weather|sun|sky",
         'health': "sports|gym|sleep",
         'food': "brownie|food|coffee|water|bread",
-        'mental_health': "stress|mental|relax"
+        'mental_health': "stress|mental|relax",
+        'sleep': 'sleep'
     }
 
     # code checks whether buzzwords are in the string per column and then adds the booleans
@@ -157,7 +158,8 @@ def clean_classification(data):
 
     # create stressed/not stressed boolean
     data_copy['stressed'] = np.where(data_copy['stress_level'] > 50, True, False)
-    
+
+    #print(data.corr(numeric_only=True).to_string())
     return data_copy
 
     
