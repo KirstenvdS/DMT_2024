@@ -61,8 +61,6 @@ def clean(df):
 
     # print("Number of students per major: \n", df["major_cleaned"].value_counts(dropna=False))
 
-    # ignore column birth date, too complicated
-
     # clean column bed time manually
     # 1 means "0:01-1:00"
     # 2 means "1:01-2:00"
@@ -156,7 +154,7 @@ def explore_data(df):
 
     # major and stress: CS more stressed than others
     df.boxplot(column="stress_cleaned", by="major_cleaned")
-    # plt.show()
+    plt.show()
 
     # major and hours of sport?
     df.boxplot(column="sport_cleaned", by="major_cleaned")
