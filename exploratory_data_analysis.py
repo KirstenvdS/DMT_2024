@@ -4,7 +4,11 @@ import csv
 import matplotlib.pyplot as plt
 import pandas as pd
 import re
+import seaborn as sns
 from dateutil.parser import parse
+
+# Colors suitable for color blindness
+color_codes = ["#648FFF", "#785EF0", "#DC267F", "#FE6100", "#FFB000"]
 
 
 def birthyear(s):
@@ -79,9 +83,9 @@ def clean(df):
                 2, 23, 6, 0, 3, 2, 2, 3, 23, 1, -1, 0, 4, 1, 3, 1, 0, 2, 4, 4, 1, 23, 3, 23, 3, 2, 4, 0, 1, 2, 0, 3, 0,
                 3, 0, 0, 0, -1, 2, 2, 23, 1, 0, 23, 0, 3]
     df["bedtimes_cleaned"] = bedtimes
-    # remove non-sensical data, anything between 6-19 o'clock makes no sense
-    df.loc[np.isin(df["bedtimes_cleaned"], range(6, 19)), "bedtimes_cleaned"] = pd.NA
     df.loc[df["bedtimes_cleaned"] == -1, "bedtimes_cleaned"] = pd.NA
+
+
     # print("Bedtime cleaned: \n", df["bedtimes_cleaned"].value_counts(dropna=False).to_string())
 
     # Gone to bed late? 1-5 AM
@@ -97,14 +101,6 @@ def clean(df):
     df.loc[df["sport_cleaned"] == "geen", "sport_cleaned"] = "0"
     df.loc[df["sport_cleaned"] == "2-4", "sport_cleaned"] = "3"
     df["sport_cleaned"] = pd.to_numeric(df.loc[:, "sport_cleaned"])
-
-    # remove outliers column sport:
-    # remove impossible values 632 (90 hours per day) and 57 (8 hours per day) and 50 (7 hours per day)
-    # remove whole row because did not answer honestly
-    df.loc[df["sport_cleaned"] == 632.0, :] = pd.NA
-    df.loc[df["sport_cleaned"] == 57.0, :] = pd.NA
-    df.loc[df["sport_cleaned"] == 50.0, :] = pd.NA
-
     # print("Distribution of number of sport hours cleaned: \n", df["sport_cleaned"].value_counts(dropna=False))
 
     # clean column stress level
@@ -112,10 +108,6 @@ def clean(df):
     # remove impossible values < 0 or > 100
     df["stress_cleaned"] = df["stress_level"]
     df["stress_cleaned"] = pd.to_numeric(df.loc[:, "stress_cleaned"])
-
-    # Delete impossible values everywhere because did not answer honestly
-    df.loc[(df["stress_cleaned"] < 0) | (df["stress_cleaned"] > 100), :] = pd.NA
-    # print("Stress level cleaned: \n", df["stress_cleaned"].value_counts(dropna=False).to_string())
 
     # clean column estimate number of students
     # print("Raw no students estimate : \n", df["no_students"].value_counts(dropna=False).to_string())
@@ -129,75 +121,197 @@ def clean(df):
     df.loc[df["no_students_cleaned"] == "Around 200", "no_students_cleaned"] = "200"
     df.loc[df["no_students_cleaned"] == "1 million", "no_students_cleaned"] = "1000000"
     df["no_students_cleaned"] = pd.to_numeric(df.loc[:, "no_students_cleaned"])
+    #print("Cleaned no students estimate : \n", df["no_students_cleaned"].value_counts(dropna=False).to_string())
 
-    # Remove impossible and silly values (< 20 or > 600)
-    # remove whole row because did not answer honestly
-    df.loc[(df["no_students_cleaned"] < 20) | (df["no_students_cleaned"] > 600), :] = pd.NA
-    print("Cleaned no students estimate : \n", df["no_students_cleaned"].value_counts(dropna=False).to_string())
-
+    # Error of estimation
     true_n_students = len(df)
-    df["SE_no_students"] = abs(df.loc[:, "no_students_cleaned"] - true_n_students) ** 2
+    df["err_no_students"] = abs(df.loc[:, "no_students_cleaned"] - true_n_students)
 
     # age
     df["birthyear"] = df['birthday'].apply(birthyear)
     df["age"] = 2024 - df["birthyear"]
-    df.loc[(df["age"] < 18) | (df["age"] > 80), "age"] = pd.NA
-    print(df.loc[:,"age"].value_counts(dropna=False))
-
 
     # return new dataframe
     return df
 
 
-def explore_data(df):
-    subdf = df[["stress_cleaned", "sport_cleaned", "bed_late", "no_students_cleaned"]]
-    print(subdf.corr(numeric_only=True).to_string())
+def remove_outliers(df):
+    # bed times
+    # remove non-sensical data, anything between 6-19 o'clock makes no sense
+    df.loc[np.isin(df["bedtimes_cleaned"], range(6, 19)), "bedtimes_cleaned"] = pd.NA
 
-    # major and stress: CS more stressed than others
-    df.boxplot(column="stress_cleaned", by="major_cleaned")
+    # sport
+    # remove impossible values 632 (90 hours per day) and 57 (8 hours per day) and 50 (7 hours per day)
+    df.loc[df["sport_cleaned"] == 632.0, "sport_cleaned"] = pd.NA
+    df.loc[df["sport_cleaned"] == 57.0, "sport_cleaned"] = pd.NA
+    df.loc[df["sport_cleaned"] == 50.0, "sport_cleaned"] = pd.NA
+
+    # Stress
+    # Delete impossible values everywhere because did not answer honestly
+    df.loc[(df["stress_cleaned"] < 0) | (df["stress_cleaned"] > 100), "stress_cleaned"] = pd.NA
+
+    # No students estimate
+    # Remove impossible and silly values (< 20 or > 600)
+    df.loc[(df["no_students_cleaned"] < 20) | (df["no_students_cleaned"] > 600),
+        "no_students_cleaned"] = pd.NA
+
+    # re-calculate error of estimation of number of students
+    true_n_students = len(df)
+    df["err_no_students"] = abs(df.loc[:, "no_students_cleaned"] - true_n_students)
+
+    # Age
+    df.loc[(df["age"] < 18) | (df["age"] > 80), "age"] = pd.NA
+
+    # Gender
+    df.loc[(df["gender"] == "non-binary") |
+           (df["gender"] == "gender fluid") |
+           (df["gender"] == "other"), "gender"] = "other"
+
+    return df
+
+
+def explore_data(df):
+    # Number of observations
+    N = len(df)
+    print("Number of observations: ", N)
+
+    # Number of columns
+    M = len(df.columns)
+    print("Number of columns: ", M)
+
+    ##################### Numerical values: min, max, mean, median, var, NAs
+    # age
+    print("Birthyear: ")
+    print(df["birthyear"].value_counts(dropna=False))
+    print(df["birthyear"].describe())
+    print("Age: ")
+    print(df["age"].value_counts(dropna=False))
+    print(df["age"].describe())
+    df.hist(column="age", bins=25)
+    plt.xlabel("Age in years")
+    plt.ylabel("Frequency")
+    plt.title("Age")
     plt.show()
 
-    # major and hours of sport?
-    df.boxplot(column="sport_cleaned", by="major_cleaned")
-    # plt.show()
+    # no students estimation
+    print("No Students: ")
+    print(df["no_students_cleaned"].value_counts(dropna=False))
+    print(df["no_students_cleaned"].describe())
 
-    df.plot.scatter(x="sport_cleaned", y="stress_cleaned")
-    # plt.show()
+    # stress level
+    print("Stess level: ")
+    print(df["stress_cleaned"].value_counts(dropna=False))
+    print(df["stress_cleaned"].describe())
 
-    df.plot.scatter(x="bedtimes_cleaned", y="stress_cleaned")
-    # plt.show()
+    # sport hours
+    print("Sport hours: ")
+    print(df["sport_cleaned"].value_counts(dropna=False))
+    print(df["sport_cleaned"].describe())
+
+    # bedtime
+    print("Bedtime: ")
+    print(df["bedtimes_cleaned"].value_counts(dropna=False))
+    df["bedtimes_cleaned_t"] = df["bedtimes_cleaned"] - 1
+    df.loc[(df["bedtimes_cleaned_t"] < 0), "bedtimes_cleaned_t"] = 23
+    df.hist("bedtimes_cleaned_t", bins=24, color=color_codes[0])
+    plt.xlabel("Time in hours")
+    plt.ylabel("Frequency")
+    plt.title("Bedtimes")
+    plt.xticks([0,2,4,6,8,10,12,14,16,18,20,22])
+    plt.savefig("bedtimes_hist.png")
+    plt.show()
+
+    # ignore random number because it doesn't make sense
+
+    #################### Categorical values: counts, NAs
+    # major
+    print("Major: ")
+    print(df["major_cleaned"].value_counts(dropna=False))
+
+    # ml course
+    print("ML course: ")
+    print(df["ml_course"].value_counts(dropna=False))
+
+    # information retrieval
+    print("Information retrieval course: ")
+    print(df["information_retrieval_course"].value_counts(dropna=False))
+
+    # statistics course
+    print("Statistics course: ")
+    print(df["statistics_course"].value_counts(dropna=False))
+
+    # database course
+    print("Database course: ")
+    print(df["database_course"].value_counts(dropna=False))
+
+    # gender
+    print("Gender: ")
+    print(df["gender"].value_counts(dropna=False))
+
+    # used chatgpt
+    print("Used chatgpt: ")
+    print(df["used_chatgpt"].value_counts(dropna=False))
+
+    # stand up
+    print("Stand up: ")
+    print(df["stand_up"].value_counts(dropna=False))
+
+    # good day categories/wordcloud
+    print("Good day: ")
+    categories = ["social", "weather", "exercise", "food", "mental_health", "sleep"]
+    counts = np.zeros(len(categories))
+    for i in range(len(categories)):
+        counts[i] = df['happy_' + categories[i]].values.sum()
+    counts, categories = zip(*sorted(zip(counts, categories), reverse=True))
+    plt.bar(categories, counts, color=color_codes[0])
+    plt.title("Categories mentioned in \"What makes a good day for you?\"")
+    plt.xlabel("Category")
+    plt.ylabel("Frequency")
+    plt.savefig("good_day_categories_barplot.png")
+    plt.show()
+
+def plot_cleaned_data(df):
+    ##################### Interesting properties
+    # major and stress: CS more stressed than others
+    df.boxplot(column="stress_cleaned", by="major_cleaned")
+    plt.title("Boxplot stress grouped by major")
+    plt.suptitle('')
+    plt.xlabel("Major")
+    plt.ylabel("Stress level")
+    plt.savefig("stress_major_boxplot.png")
+    plt.show()
 
     df.boxplot(column="stress_cleaned", by="gender")
-    # plt.show()
+    plt.title("Boxplot stress grouped by gender")
+    plt.suptitle('')
+    plt.xlabel("Gender")
+    plt.ylabel("Stress level")
+    plt.savefig("stress_gender_boxplot.png")
+    plt.show()
 
-    print(df.loc[:, "gender"].value_counts(dropna=False))
-    df.hist(column="stress_cleaned", by="bed_late")
-    # plt.show()
+    # Sport hours by people who mentioned exercise or gym in their categories
+    df.boxplot(column="sport_cleaned", by="happy_exercise")
+    plt.suptitle('')
+    plt.title("Number of hours of exercise per week \nif \"exercise\" "
+              "mentioned in \"What makes a good day?\"")
+    plt.xlabel("\"Exercise\" mentioned in \"What makes a good day?\"")
+    plt.ylabel("Amoung of exercise (# hours/week)")
+    plt.savefig("sport_hours_exercise.png")
+    plt.show()
 
-    df.boxplot(column="sport_cleaned", by="bed_late")
-    # plt.show()
-
-    df.hist(column="bedtimes_cleaned", by="major_cleaned")
-    # plt.show()
-
-    # interesting! AI estimates better than others
-    df.hist(column="SE_no_students", by="gender")
-    # plt.show()
-
-    df.plot.scatter(x="SE_no_students", y="stress_cleaned")
-    # plt.show()
-
-    # standing up does not help with estimating number of students
-    df.boxplot(column="SE_no_students", by="stand_up")
-
-    # How many stood up?
-    print(df.loc[:, "stand_up"].value_counts(dropna=False))
-
-    df.boxplot(column="stress_cleaned", by="used_chatgpt")
-    #plt.show()
-    print(df.loc[:, "used_chatgpt"].value_counts(dropna=False))
-
-    df.hist(column="age")
+    # correlations
+    dfsub = df[['stressed', 'bed_late', 'err_no_students','happy_weather', 'happy_food',
+                'happy_mental_health', 'happy_exercise', 'happy_sleep', 'happy_social']]
+    matrix = dfsub.corr().round(2)
+    print(matrix)
+    mask = np.triu(np.ones_like(matrix, dtype=bool))
+    fig = plt.figure()
+    sns.heatmap(matrix, annot=True,vmax=1, vmin=-1, center=0, cmap='vlag', mask=mask)
+    plt.title("Correlation Matrix of various numerical outcomes")
+    ax = plt.gca()
+    ax.tick_params(axis='x', labelrotation=45)
+    fig.tight_layout()
+    fig.savefig("corr_matrix_heatmap.png")
     plt.show()
 
 
@@ -212,11 +326,11 @@ def clean_classification(data):
 
     # dictionary of all categories and buzzwords
     all_buzzwords = {
-        'social': "friend|social|family|sex",
+        'social': "friend|social|family|sex|party",
         'weather': "weather|sun|sky",
-        'health': "sports|gym|sleep",
-        'food': "brownie|food|coffee|water|bread",
-        'mental_health': "stress|mental|relax",
+        'exercise': "sports|gym|exercise|working out",
+        'food': "brownie|food|coffee|water|bread|pizza|meal|tea|lunch|dinner|breakfast|eat",
+        'mental_health': "stress|mental|relax|rest",
         'sleep': 'sleep'
     }
 
@@ -230,10 +344,8 @@ def clean_classification(data):
     # create stressed/not stressed boolean
     data_copy['stressed'] = np.where(data_copy['stress_level'] > 50, True, False)
 
-    #print(data.corr(numeric_only=True).to_string())
+    # print(data.corr(numeric_only=True).to_string())
     return data_copy
-
-    
 
 
 if __name__ == '__main__':
@@ -242,3 +354,5 @@ if __name__ == '__main__':
     data = clean(data)
     data = clean_classification(data)
     explore_data(data)
+    data = remove_outliers(data)
+    plot_cleaned_data(data)
