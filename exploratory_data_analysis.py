@@ -4,6 +4,7 @@ import csv
 import matplotlib.pyplot as plt
 import pandas as pd
 import re
+from scipy.stats import chi2_contingency
 import seaborn as sns
 from dateutil.parser import parse
 
@@ -61,6 +62,7 @@ def clean(df):
         if bioinformatics[i]:
             df.loc[i, "major_cleaned"] = "bioInf"
         if business_analytics[i]:
+
             df.loc[i, "major_cleaned"] = "BA"
 
     # print("Number of students per major: \n", df["major_cleaned"].value_counts(dropna=False))
@@ -101,16 +103,19 @@ def clean(df):
     df.loc[df["sport_cleaned"] == "geen", "sport_cleaned"] = "0"
     df.loc[df["sport_cleaned"] == "2-4", "sport_cleaned"] = "3"
     df["sport_cleaned"] = pd.to_numeric(df.loc[:, "sport_cleaned"])
+
     # print("Distribution of number of sport hours cleaned: \n", df["sport_cleaned"].value_counts(dropna=False))
 
     # clean column stress level
     # print("Raw Stress level : \n", df["stress_level"].value_counts().to_string())
     # remove impossible values < 0 or > 100
     df["stress_cleaned"] = df["stress_level"]
+
     df["stress_cleaned"] = pd.to_numeric(df.loc[:, "stress_cleaned"])
 
     # clean column estimate number of students
     # print("Raw no students estimate : \n", df["no_students"].value_counts(dropna=False).to_string())
+
     df["no_students_cleaned"] = df["no_students"]
     df.loc[df["no_students_cleaned"] == "Two hundred fifty", "no_students_cleaned"] = "250"
     df.loc[df["no_students_cleaned"] == "Around200", "no_students_cleaned"] = "200"
@@ -123,9 +128,11 @@ def clean(df):
     df["no_students_cleaned"] = pd.to_numeric(df.loc[:, "no_students_cleaned"])
     #print("Cleaned no students estimate : \n", df["no_students_cleaned"].value_counts(dropna=False).to_string())
 
+
     # Error of estimation
     true_n_students = len(df)
     df["err_no_students"] = abs(df.loc[:, "no_students_cleaned"] - true_n_students)
+
 
     # age
     df["birthyear"] = df['birthday'].apply(birthyear)
@@ -171,6 +178,7 @@ def remove_outliers(df):
 
 
 def explore_data(df):
+
     # Number of observations
     N = len(df)
     print("Number of observations: ", N)
@@ -344,8 +352,40 @@ def clean_classification(data):
     # create stressed/not stressed boolean
     data_copy['stressed'] = np.where(data_copy['stress_level'] > 50, True, False)
 
-    # print(data.corr(numeric_only=True).to_string())
+
+    #print(data.corr(numeric_only=True).to_string())
     return data_copy
+
+def classification_prep(data):
+    data['ml_course_categorical'] = pd.Categorical(data["ml_course"], categories=["yes", "no"], ordered=False)
+    data['information_retrieval_course_categorical'] = pd.Categorical(data["information_retrieval_course"],
+                                                                           categories=["1", "0"], ordered=False)
+    data['statistics_course_categorical'] = pd.Categorical(data["statistics_course"],
+                                                                categories=["mu", "sigma"], ordered=False)
+
+    subdata = data[["major_cleaned", 'ml_course_categorical', 'information_retrieval_course_categorical', 'statistics_course_categorical']]
+
+    for i in subdata.columns:
+        for j in subdata.columns:
+            CrosstabResult = pd.crosstab(index=subdata[i], columns=subdata[j])
+            ChiSqResult = chi2_contingency(CrosstabResult)
+            print("the p-value of the chisq test between", i, "and", j, "is", ChiSqResult[1])
+
+    # print(data['ml_course_categorical'])
+    # print(data['information_retrieval_course_categorical'])
+    # print(data['statistics_course_categorical'])
+    # print(data['ml_course_categorical'].value_counts())
+    # print(data['information_retrieval_course_categorical'].value_counts())
+    # print(data['statistics_course_categorical'].value_counts())
+    # data_encoded = pd.get_dummies(data,
+    #                               columns=['ml_course_categorical', 'information_retrieval_course_categorical',
+    #                                        'statistics_course_categorical'])
+    #
+    # subdf = data_encoded['major_cleaned']
+    # print(data.corr(numeric_only=False).to_string())
+    # print(data_encoded["ml_course_categorical_yes"])
+    # print(data_copy[])
+
 
 
 if __name__ == '__main__':
@@ -354,5 +394,9 @@ if __name__ == '__main__':
     data = clean(data)
     data = clean_classification(data)
     explore_data(data)
+
+    classification_prep(data)
+
     data = remove_outliers(data)
     plot_cleaned_data(data)
+
