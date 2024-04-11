@@ -4,6 +4,8 @@ import csv
 import matplotlib.pyplot as plt
 import pandas as pd
 import re
+from scipy.stats import chi2_contingency
+import seaborn as sns
 
 
 def clean(df):
@@ -48,8 +50,7 @@ def clean(df):
         if business_analytics[i]:
             df.loc[i,"major_cleaned"] = "businessAnalytics"
 
-    print("Number of students per major: \n", df["major_cleaned"].value_counts(dropna=False))
-
+    #print("Number of students per major: \n", df["major_cleaned"].value_counts(dropna=False))
     # ignore column birth date, too complicated
 
     # clean column bed time manually
@@ -72,11 +73,11 @@ def clean(df):
     # remove non-sensical data, anything between 6-19 o'clock makes no sense
     df.loc[np.isin(df["bedtimes_cleaned"], range(6,19)), "bedtimes_cleaned"] = pd.NA
     df.loc[df["bedtimes_cleaned"] == -1, "bedtimes_cleaned"] = pd.NA
-    print("Bedtime cleaned: \n", df["bedtimes_cleaned"].value_counts(dropna=False).to_string())
+    #print("Bedtime cleaned: \n", df["bedtimes_cleaned"].value_counts(dropna=False).to_string())
 
     # Gone to bed late? 1-5 AM
     df["bed_late"] = np.isin(df["bedtimes_cleaned"], range(1,6))
-    print("Gone to bed late? \n", df["bed_late"].value_counts(dropna=False).to_string())
+    #print("Gone to bed late? \n", df["bed_late"].value_counts(dropna=False).to_string())
 
     # clean column sports
     #print("Raw number of sport hours mentioned: \n", df["sport_hours"].value_counts())
@@ -94,7 +95,7 @@ def clean(df):
     df.loc[df["sport_cleaned"] == 57.0, "sport_cleaned"] = pd.NA
     df.loc[df["sport_cleaned"] == 50.0, "sport_cleaned"] = pd.NA
 
-    print("Distribution of number of sport hours cleaned: \n", df["sport_cleaned"].value_counts(dropna=False))
+    #print("Distribution of number of sport hours cleaned: \n", df["sport_cleaned"].value_counts(dropna=False))
 
     # clean column stress level
     #print("Raw Stress level : \n", df["stress_level"].value_counts().to_string())
@@ -102,10 +103,10 @@ def clean(df):
     df["stress_cleaned"] = df["stress_level"]
     df["stress_cleaned"] = pd.to_numeric(df.loc[:,"stress_cleaned"])
     df.loc[(df["stress_cleaned"] < 0) | (df["stress_cleaned"] > 100), "stress_cleaned"] = pd.NA
-    print("Stress level cleaned: \n", df["stress_cleaned"].value_counts(dropna=False).to_string())
+    #print("Stress level cleaned: \n", df["stress_cleaned"].value_counts(dropna=False).to_string())
 
     # clean column estimate number of students
-    print("Raw no students estimate : \n", df["no_students"].value_counts(dropna=False).to_string())
+    #print("Raw no students estimate : \n", df["no_students"].value_counts(dropna=False).to_string())
     df["no_students_cleaned"] = df["no_students"]
     df.loc[df["no_students_cleaned"] == "Two hundred fifty", "no_students_cleaned"] = "250"
     df.loc[df["no_students_cleaned"] == "Around200", "no_students_cleaned"] = "200"
@@ -119,7 +120,7 @@ def clean(df):
 
     # Remove impossible and silly values (< 20 or > 1000)
     df.loc[(df["no_students_cleaned"] < 20) | (df["no_students_cleaned"] > 1000), "no_students_cleaned"] = pd.NA
-    print("Cleaned no students estimate : \n", df["no_students_cleaned"].value_counts(dropna=False).to_string())
+    #print("Cleaned no students estimate : \n", df["no_students_cleaned"].value_counts(dropna=False).to_string())
 
 
     # return new dataframe
@@ -127,8 +128,9 @@ def clean(df):
 
 def explore_data(df):
     subdf = df[["stress_cleaned", "sport_cleaned", "bed_late", "no_students_cleaned"]]
-    print(subdf.corr(numeric_only=True).to_string())
+    #print(subdf.corr(numeric_only=True).to_string())
     return
+
 
 def clean_classification(data):
     data_copy = data.copy()
@@ -159,10 +161,40 @@ def clean_classification(data):
     # create stressed/not stressed boolean
     data_copy['stressed'] = np.where(data_copy['stress_level'] > 50, True, False)
 
+
+
     #print(data.corr(numeric_only=True).to_string())
     return data_copy
 
-    
+def classification_prep(data):
+    data['ml_course_categorical'] = pd.Categorical(data["ml_course"], categories=["yes", "no"], ordered=False)
+    data['information_retrieval_course_categorical'] = pd.Categorical(data["information_retrieval_course"],
+                                                                           categories=["1", "0"], ordered=False)
+    data['statistics_course_categorical'] = pd.Categorical(data["statistics_course"],
+                                                                categories=["mu", "sigma"], ordered=False)
+
+    subdata = data[["major_cleaned", 'ml_course_categorical', 'information_retrieval_course_categorical', 'statistics_course_categorical']]
+
+    for i in subdata.columns:
+        for j in subdata.columns:
+            CrosstabResult = pd.crosstab(index=subdata[i], columns=subdata[j])
+            ChiSqResult = chi2_contingency(CrosstabResult)
+            print("the p-value of the chisq test between", i, "and", j, "is", ChiSqResult[1])
+
+    # print(data['ml_course_categorical'])
+    # print(data['information_retrieval_course_categorical'])
+    # print(data['statistics_course_categorical'])
+    # print(data['ml_course_categorical'].value_counts())
+    # print(data['information_retrieval_course_categorical'].value_counts())
+    # print(data['statistics_course_categorical'].value_counts())
+    # data_encoded = pd.get_dummies(data,
+    #                               columns=['ml_course_categorical', 'information_retrieval_course_categorical',
+    #                                        'statistics_course_categorical'])
+    #
+    # subdf = data_encoded['major_cleaned']
+    # print(data.corr(numeric_only=False).to_string())
+    # print(data_encoded["ml_course_categorical_yes"])
+    # print(data_copy[])
 
 
 if __name__ == '__main__':
@@ -171,7 +203,8 @@ if __name__ == '__main__':
     data = clean(data)
     data = clean_classification(data)
     explore_data(data)
-    
+    classification_prep(data)
 
 
-#print(data)
+
+
