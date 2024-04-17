@@ -25,8 +25,8 @@ def clean(df):
     # Delete rows 0,1
     df = df.drop(labels=[0, 1])
     # Make header names
-    column_names = ["timestamp", "major", "ml_course", "information_retrieval_course", "statistics_course",
-                    "database_course", "gender", "used_chatgpt", "birthday", "no_students", "stand_up",
+    column_names = ["timestamp", "major", "ml_course", "inf_ret_course", "stat_course",
+                    "db_course", "gender", "used_chatgpt", "birthday", "no_students", "stand_up",
                     "stress_level", "sport_hours", "rand_number", "bedtime", "good_day_1", "good_day_2"]
     df.columns = column_names
 
@@ -63,8 +63,6 @@ def clean(df):
         if business_analytics[i]:
             df.loc[i, "major_cleaned"] = "BA"
 
-    # print("Number of students per major: \n", df["major_cleaned"].value_counts(dropna=False))
-
     # clean column bed time manually
     # 1 means "0:01-1:00"
     # 2 means "1:01-2:00"
@@ -85,12 +83,9 @@ def clean(df):
     df["bedtimes_cleaned"] = bedtimes
     df.loc[df["bedtimes_cleaned"] == -1, "bedtimes_cleaned"] = pd.NA
 
-
-    # print("Bedtime cleaned: \n", df["bedtimes_cleaned"].value_counts(dropna=False).to_string())
-
     # Gone to bed late? 1-5 AM
     df["bed_late"] = np.isin(df["bedtimes_cleaned"], range(1, 6))
-    # print("Gone to bed late? \n", df["bed_late"].value_counts(dropna=False).to_string())
+    print(df["bed_late"].value_counts(dropna=False))
 
     # clean column sports
     # print("Raw number of sport hours mentioned: \n", df["sport_hours"].value_counts())
@@ -101,16 +96,15 @@ def clean(df):
     df.loc[df["sport_cleaned"] == "geen", "sport_cleaned"] = "0"
     df.loc[df["sport_cleaned"] == "2-4", "sport_cleaned"] = "3"
     df["sport_cleaned"] = pd.to_numeric(df.loc[:, "sport_cleaned"])
-    # print("Distribution of number of sport hours cleaned: \n", df["sport_cleaned"].value_counts(dropna=False))
 
     # clean column stress level
-    # print("Raw Stress level : \n", df["stress_level"].value_counts().to_string())
-    # remove impossible values < 0 or > 100
     df["stress_cleaned"] = df["stress_level"]
     df["stress_cleaned"] = pd.to_numeric(df.loc[:, "stress_cleaned"])
 
+    # random number
+    df["rand_number"] = pd.to_numeric(df.loc[:,"rand_number"], errors='coerce')
+
     # clean column estimate number of students
-    # print("Raw no students estimate : \n", df["no_students"].value_counts(dropna=False).to_string())
     df["no_students_cleaned"] = df["no_students"]
     df.loc[df["no_students_cleaned"] == "Two hundred fifty", "no_students_cleaned"] = "250"
     df.loc[df["no_students_cleaned"] == "Around200", "no_students_cleaned"] = "200"
@@ -121,7 +115,6 @@ def clean(df):
     df.loc[df["no_students_cleaned"] == "Around 200", "no_students_cleaned"] = "200"
     df.loc[df["no_students_cleaned"] == "1 million", "no_students_cleaned"] = "1000000"
     df["no_students_cleaned"] = pd.to_numeric(df.loc[:, "no_students_cleaned"])
-    #print("Cleaned no students estimate : \n", df["no_students_cleaned"].value_counts(dropna=False).to_string())
 
     # Error of estimation
     true_n_students = len(df)
@@ -148,19 +141,25 @@ def remove_outliers(df):
 
     # Stress
     # Delete impossible values everywhere because did not answer honestly
+    #print(len(df.loc[(df["stress_cleaned"] < 0) | (df["stress_cleaned"] > 100), :]))
     df.loc[(df["stress_cleaned"] < 0) | (df["stress_cleaned"] > 100), "stress_cleaned"] = pd.NA
 
     # No students estimate
     # Remove impossible and silly values (< 20 or > 600)
+    #print(len(df.loc[(df["no_students_cleaned"] < 20) | (df["no_students_cleaned"] > 600), :]))
     df.loc[(df["no_students_cleaned"] < 20) | (df["no_students_cleaned"] > 600),
         "no_students_cleaned"] = pd.NA
 
     # re-calculate error of estimation of number of students
     true_n_students = len(df)
     df["err_no_students"] = abs(df.loc[:, "no_students_cleaned"] - true_n_students)
+    print(df["err_no_students"].describe())
+
 
     # Age
+    #print(len(df.loc[(df["age"] < 18) | (df["age"] > 80), :]) )
     df.loc[(df["age"] < 18) | (df["age"] > 80), "age"] = pd.NA
+    #print(df["age"].describe())
 
     # Gender
     df.loc[(df["gender"] == "non-binary") |
@@ -208,6 +207,11 @@ def explore_data(df):
     print(df["sport_cleaned"].value_counts(dropna=False))
     print(df["sport_cleaned"].describe())
 
+    # random number
+    print("Random number: ")
+    print(df["rand_number"].value_counts(dropna=False).to_string())
+    print(df["rand_number"].describe())
+
     # bedtime
     print("Bedtime: ")
     print(df["bedtimes_cleaned"].value_counts(dropna=False))
@@ -221,8 +225,6 @@ def explore_data(df):
     plt.savefig("bedtimes_hist.png")
     plt.show()
 
-    # ignore random number because it doesn't make sense
-
     #################### Categorical values: counts, NAs
     # major
     print("Major: ")
@@ -234,15 +236,15 @@ def explore_data(df):
 
     # information retrieval
     print("Information retrieval course: ")
-    print(df["information_retrieval_course"].value_counts(dropna=False))
+    print(df["inf_ret_course"].value_counts(dropna=False))
 
     # statistics course
     print("Statistics course: ")
-    print(df["statistics_course"].value_counts(dropna=False))
+    print(df["stat_course"].value_counts(dropna=False))
 
     # database course
     print("Database course: ")
-    print(df["database_course"].value_counts(dropna=False))
+    print(df["db_course"].value_counts(dropna=False))
 
     # gender
     print("Gender: ")
@@ -263,6 +265,8 @@ def explore_data(df):
     for i in range(len(categories)):
         counts[i] = df['happy_' + categories[i]].values.sum()
     counts, categories = zip(*sorted(zip(counts, categories), reverse=True))
+    print("Categories good day counts: ")
+    print(categories, counts)
     plt.bar(categories, counts, color=color_codes[0])
     plt.title("Categories mentioned in \"What makes a good day for you?\"")
     plt.xlabel("Category")
@@ -300,8 +304,12 @@ def plot_cleaned_data(df):
     plt.show()
 
     # correlations
-    dfsub = df[['stressed', 'bed_late', 'err_no_students','happy_weather', 'happy_food',
+    dfsub = df[['stress_cleaned', 'sport_cleaned', 'age', 'bed_late', 'err_no_students','happy_weather', 'happy_food',
                 'happy_mental_health', 'happy_exercise', 'happy_sleep', 'happy_social']]
+    ylabels = ['stress_level', 'sport_hours', 'age', 'bed_late', 'err_no_students','happy_weather', 'happy_food',
+                'happy_mental_health', 'happy_exercise', 'happy_sleep', 'happy_social']
+    xlabels = ['stress', 'sport', 'age', 'bed late', 'error', 'weather', 'food',
+               'm health', 'exercise', 'sleep', 'social']
     matrix = dfsub.corr().round(2)
     print(matrix)
     mask = np.triu(np.ones_like(matrix, dtype=bool))
@@ -309,7 +317,11 @@ def plot_cleaned_data(df):
     sns.heatmap(matrix, annot=True,vmax=1, vmin=-1, center=0, cmap='vlag', mask=mask)
     plt.title("Correlation Matrix of various numerical outcomes")
     ax = plt.gca()
-    ax.tick_params(axis='x', labelrotation=45)
+    ax.tick_params(axis='x', labelrotation=60)
+    xticks = ax.get_xticks()
+    yticks = ax.get_yticks()
+    plt.xticks(ticks=xticks, labels=xlabels)
+    plt.yticks(ticks=yticks, labels=ylabels)
     fig.tight_layout()
     fig.savefig("corr_matrix_heatmap.png")
     plt.show()
@@ -328,7 +340,7 @@ def clean_classification(data):
     all_buzzwords = {
         'social': "friend|social|family|sex|party",
         'weather': "weather|sun|sky",
-        'exercise': "sports|gym|exercise|working out",
+        'exercise': "sport|gym|exercise|working out",
         'food': "brownie|food|coffee|water|bread|pizza|meal|tea|lunch|dinner|breakfast|eat",
         'mental_health': "stress|mental|relax|rest",
         'sleep': 'sleep'
@@ -353,6 +365,6 @@ if __name__ == '__main__':
     data = pd.read_csv('ODI-2024.csv')
     data = clean(data)
     data = clean_classification(data)
-    explore_data(data)
+    #explore_data(data)
     data = remove_outliers(data)
     plot_cleaned_data(data)
