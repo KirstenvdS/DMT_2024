@@ -7,6 +7,9 @@ import re
 from scipy.stats import chi2_contingency
 import seaborn as sns
 from dateutil.parser import parse
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsRegressor
 
 # Colors suitable for color blindness
 color_codes = ["#648FFF", "#785EF0", "#DC267F", "#FE6100", "#FFB000"]
@@ -196,10 +199,10 @@ def explore_data(df):
     print(df["age"].value_counts(dropna=False))
     print(df["age"].describe())
     df.hist(column="age", bins=25)
-    plt.xlabel("Age in years")
-    plt.ylabel("Frequency")
-    plt.title("Age")
-    plt.show()
+    # plt.xlabel("Age in years")
+    # plt.ylabel("Frequency")
+    # plt.title("Age")
+    # plt.show()
 
     # no students estimation
     print("No Students: ")
@@ -222,12 +225,12 @@ def explore_data(df):
     df["bedtimes_cleaned_t"] = df["bedtimes_cleaned"] - 1
     df.loc[(df["bedtimes_cleaned_t"] < 0), "bedtimes_cleaned_t"] = 23
     df.hist("bedtimes_cleaned_t", bins=24, color=color_codes[0])
-    plt.xlabel("Time in hours")
-    plt.ylabel("Frequency")
-    plt.title("Bedtimes")
-    plt.xticks([0,2,4,6,8,10,12,14,16,18,20,22])
-    plt.savefig("bedtimes_hist.png")
-    plt.show()
+    # plt.xlabel("Time in hours")
+    # plt.ylabel("Frequency")
+    # plt.title("Bedtimes")
+    # plt.xticks([0,2,4,6,8,10,12,14,16,18,20,22])
+    # plt.savefig("bedtimes_hist.png")
+    # plt.show()
 
     # ignore random number because it doesn't make sense
 
@@ -271,12 +274,12 @@ def explore_data(df):
     for i in range(len(categories)):
         counts[i] = df['happy_' + categories[i]].values.sum()
     counts, categories = zip(*sorted(zip(counts, categories), reverse=True))
-    plt.bar(categories, counts, color=color_codes[0])
-    plt.title("Categories mentioned in \"What makes a good day for you?\"")
-    plt.xlabel("Category")
-    plt.ylabel("Frequency")
-    plt.savefig("good_day_categories_barplot.png")
-    plt.show()
+    # plt.bar(categories, counts, color=color_codes[0])
+    # plt.title("Categories mentioned in \"What makes a good day for you?\"")
+    # plt.xlabel("Category")
+    # plt.ylabel("Frequency")
+    # plt.savefig("good_day_categories_barplot.png")
+    # plt.show()
 
 def plot_cleaned_data(df):
     ##################### Interesting properties
@@ -374,9 +377,10 @@ def classification_prep(data):
     # print(data['ml_course_categorical'])
     # print(data['information_retrieval_course_categorical'])
     # print(data['statistics_course_categorical'])
-    # print(data['ml_course_categorical'].value_counts())
-    # print(data['information_retrieval_course_categorical'].value_counts())
-    # print(data['statistics_course_categorical'].value_counts())
+    print(data["major_cleaned"].value_counts())
+    print(data['ml_course_categorical'].value_counts())
+    print(data['information_retrieval_course_categorical'].value_counts())
+    print(data['statistics_course_categorical'].value_counts())
     # data_encoded = pd.get_dummies(data,
     #                               columns=['ml_course_categorical', 'information_retrieval_course_categorical',
     #                                        'statistics_course_categorical'])
@@ -385,6 +389,28 @@ def classification_prep(data):
     # print(data.corr(numeric_only=False).to_string())
     # print(data_encoded["ml_course_categorical_yes"])
     # print(data_copy[])
+
+def K_nearest_neighbours (data):
+    train, test = train_test_split(data, test_size=0.25)
+    subdf = train.drop(["major_cleaned", "timestamp"], axis=1)
+    x_columns = list(train.columns.values)
+    y_column = ["major_cleaned"]
+
+    knn = KNeighborsRegressor(n_neighbors=5)
+    knn.fit(train[x_columns], train[y_column])
+    knn.predict(test[x_columns])
+
+
+    return
+
+def randomforest(data):
+    train, test = train_test_split(data, test_size=0.25)
+    clf= RandomForestClassifier()
+
+    subdf = train.drop(["major_cleaned", "timestamp"], axis=1)
+    clf.fit(subdf, train["major_cleaned"])
+
+    return
 
 
 
@@ -398,5 +424,9 @@ if __name__ == '__main__':
     classification_prep(data)
 
     data = remove_outliers(data)
-    plot_cleaned_data(data)
+
+    K_nearest_neighbours(data)
+    #plot_cleaned_data(data)
+
+    #randomforest(data)
 
