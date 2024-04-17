@@ -29,8 +29,8 @@ def clean(df):
     # Delete rows 0,1
     df = df.drop(labels=[0, 1])
     # Make header names
-    column_names = ["timestamp", "major", "ml_course", "inf_ret_course", "stat_course",
-                    "db_course", "gender", "used_chatgpt", "birthday", "no_students", "stand_up",
+    column_names = ["timestamp", "major", "ml_course", "information_retrieval_course", "statistics_course",
+                    "database_course", "gender", "used_chatgpt", "birthday", "no_students", "stand_up",
                     "stress_level", "sport_hours", "rand_number", "bedtime", "good_day_1", "good_day_2"]
     df.columns = column_names
 
@@ -240,15 +240,15 @@ def explore_data(df):
 
     # information retrieval
     print("Information retrieval course: ")
-    print(df["inf_ret_course"].value_counts(dropna=False))
+    print(df["information_retrieval_course"].value_counts(dropna=False))
 
     # statistics course
     print("Statistics course: ")
-    print(df["stat_course"].value_counts(dropna=False))
+    print(df["statistics_course"].value_counts(dropna=False))
 
     # database course
     print("Database course: ")
-    print(df["db_course"].value_counts(dropna=False))
+    print(df["database_course"].value_counts(dropna=False))
 
     # gender
     print("Gender: ")
