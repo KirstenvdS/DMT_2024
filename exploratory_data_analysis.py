@@ -3,9 +3,12 @@ import numpy as np
 import csv
 import matplotlib.pyplot as plt
 import pandas as pd
+pd.options.mode.copy_on_write = True # copy on write becomes default in pandas 3.0
 import re
 import seaborn as sns
 from dateutil.parser import parse
+from sklearn.impute import SimpleImputer
+from miceforest import ImputationKernel
 
 
 # Colors suitable for color blindness
@@ -166,8 +169,83 @@ def remove_outliers(df):
     df.loc[(df["gender"] == "non-binary") |
            (df["gender"] == "gender fluid") |
            (df["gender"] == "other"), "gender"] = "other"
+    # Set "not willing to answer" to NA
+    df.loc[df["gender"] == "not willing to answer", "gender"] = pd.NA
+
+    # Courses
+    df.loc[df["ml_course"] == "unknown", "ml_course"] = pd.NA
+    df.loc[df["information_retrieval_course"] == "unknown", "information_retrieval_course"] = pd.NA
+    df.loc[df["database_course"] == "unknown", "database_course"] = pd.NA
+    df.loc[df["statistics_course"] == "unknown", "statistics_course"] = pd.NA
+
+    # Used Chatgpt
+    df.loc[df["used_chatgpt"] == "not willing to say", "used_chatgpt"] = pd.NA
+
+    # Stand up
+    df.loc[df["stand_up"] == "unknown", "stand_up"] = pd.NA
+
+    print(df.isna().sum())
+
 
     return df
+
+def impute_missing_values(df):
+    ######### 1st method: mean/mode
+    ### Categorical variables
+    df_cat = df[["ml_course", "information_retrieval_course", "statistics_course", "database_course",
+                 "gender", "used_chatgpt", "stand_up", "bed_late"]]
+    imp_cat = SimpleImputer(missing_values=pd.NA, strategy="most_frequent")
+    df_cat = pd.DataFrame(imp_cat.fit_transform(df_cat))
+    print(df_cat.describe())
+
+    ### Numerical variables
+    df_num = df[["age", "no_students_cleaned", "stress_cleaned", "sport_cleaned"]]
+    imp_num = SimpleImputer(missing_values=pd.NA, strategy="median")
+    df_med = pd.DataFrame(imp_num.fit_transform(df_num))
+
+    ######### 2nd method: multivariate regression with miceforest
+    df_sub = df[["age", "no_students_cleaned", "stress_cleaned", "sport_cleaned", "ml_course",
+                 "information_retrieval_course",
+                 "statistics_course", "database_course",
+                 "gender", "used_chatgpt", "stand_up", "bed_late"]]
+    cat_features = ["ml_course", "information_retrieval_course", "statistics_course", "database_course",
+                 "gender", "used_chatgpt", "stand_up", "bed_late"]
+    for c in cat_features:
+        df_sub.loc[:,c] = pd.Categorical(df_sub[c])
+
+    # Following code from https://www.datacamp.com/tutorial/techniques-to-handle-missing-data-values :
+    mice_kernel = ImputationKernel(
+        data=df_sub,
+        save_all_iterations=True,
+        random_state=2024 # random seed to make results reproducible
+    )
+    mice_kernel.mice(10)
+    mice_imputation = mice_kernel.complete_data()
+
+    # plot density of age
+    plt.figure(figsize=(10,5))
+    plt.subplot(1,2,1)
+    df["age"].plot(kind="kde",  label="original")
+    df_med[0].plot(kind="kde",  label="median")
+    mice_imputation["age"].plot(kind="kde", label="multiple")
+    plt.legend(loc="center right")
+    plt.title("age")
+    plt.suptitle("Result of missing value imputation with different methods")
+    plt.xlabel("Age in years")
+
+    # barplot
+    plt.subplot(1,2,2)
+    #print(mice_imputation.loc[:, "used_chatgpt"].value_counts(dropna=False))
+    bars_df = [["yes", "original", 186], ["yes", "most frequent", 222], ["yes", "multiple", 217],
+               ["no", "original", 23], ["no", "most frequent", 23], ["no", "multiple", 28]]
+    df = pd.DataFrame(bars_df, columns=['Answer', 'Imputation Method', 'Value'])
+    sns.barplot(x='Answer', y='Value', data=df, hue='Imputation Method')
+    plt.title("used_chatgpt")
+    plt.legend(loc="center right")
+    plt.savefig("imputation_strategies.png")
+    plt.show()
+
+    return mice_imputation
 
 
 def explore_data(df):
@@ -218,13 +296,8 @@ def explore_data(df):
     print(df["bedtimes_cleaned"].value_counts(dropna=False))
     df["bedtimes_cleaned_t"] = df["bedtimes_cleaned"] - 1
     df.loc[(df["bedtimes_cleaned_t"] < 0), "bedtimes_cleaned_t"] = 23
-    df.hist("bedtimes_cleaned_t", bins=24, color=color_codes[0])
-    plt.xlabel("Time in hours")
-    plt.ylabel("Frequency")
-    plt.title("Bedtimes")
-    plt.xticks([0,2,4,6,8,10,12,14,16,18,20,22])
-    plt.savefig("bedtimes_hist.png")
-    plt.show()
+
+
 
     #################### Categorical values: counts, NAs
     # major
@@ -268,11 +341,24 @@ def explore_data(df):
     counts, categories = zip(*sorted(zip(counts, categories), reverse=True))
     print("Categories good day counts: ")
     print(categories, counts)
+
+    # Plotting
+    # Subplot 1
+    plt.figure(figsize=(10,5))
+    plt.subplot(1,2,2)
     plt.bar(categories, counts, color=color_codes[0])
-    plt.title("Categories mentioned in \"What makes a good day for you?\"")
+    plt.title("\"What makes a good day for you?\"")
     plt.xlabel("Category")
     plt.ylabel("Frequency")
-    plt.savefig("good_day_categories_barplot.png")
+
+    # Subplot 2
+    plt.subplot(1,2,1)
+    df["bedtimes_cleaned_t"].plot.hist(bins=24, color=color_codes[0])
+    plt.xlabel("Time in hours")
+    plt.ylabel("Frequency")
+    plt.title("Bedtimes")
+    plt.xticks([0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22])
+    plt.savefig("bedtimes_good_day_subplots.png")
     plt.show()
 
 def plot_cleaned_data(df):
@@ -368,4 +454,6 @@ if __name__ == '__main__':
     #explore_data(data)
     data = remove_outliers(data)
     #plot_cleaned_data(data)
+    imputed_reduced_data = impute_missing_values(data)
+
 
