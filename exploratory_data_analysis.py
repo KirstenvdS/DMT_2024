@@ -5,11 +5,15 @@ import matplotlib.pyplot as plt
 import pandas as pd
 pd.options.mode.copy_on_write = True # copy on write becomes default in pandas 3.0
 import re
+from scipy.stats import chi2_contingency
 import seaborn as sns
 from dateutil.parser import parse
 from sklearn.impute import SimpleImputer
 from miceforest import ImputationKernel
-
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+from scipy.stats import chi2_contingency
+from sklearn.neighbors import KNeighborsRegressor
 
 # Colors suitable for color blindness
 color_codes = ["#648FFF", "#785EF0", "#DC267F", "#FE6100", "#FFB000"]
@@ -21,7 +25,7 @@ def birthyear(s):
     try:
         x = parse(s, fuzzy=True).year
     except:
-        print("Year not found in string, set to NaN.")
+        print("Year not found in string!")
     return x
 
 
@@ -65,7 +69,10 @@ def clean(df):
         if bioinformatics[i]:
             df.loc[i, "major_cleaned"] = "bioInf"
         if business_analytics[i]:
+
             df.loc[i, "major_cleaned"] = "BA"
+
+    # print("Number of students per major: \n", df["major_cleaned"].value_counts(dropna=False))
 
     # clean column bed time manually
     # 1 means "0:01-1:00"
@@ -87,9 +94,12 @@ def clean(df):
     df["bedtimes_cleaned"] = bedtimes
     df.loc[df["bedtimes_cleaned"] == -1, "bedtimes_cleaned"] = pd.NA
 
+
+    # print("Bedtime cleaned: \n", df["bedtimes_cleaned"].value_counts(dropna=False).to_string())
+
     # Gone to bed late? 1-5 AM
     df["bed_late"] = np.isin(df["bedtimes_cleaned"], range(1, 6))
-    print(df["bed_late"].value_counts(dropna=False))
+    # print("Gone to bed late? \n", df["bed_late"].value_counts(dropna=False).to_string())
 
     # clean column sports
     # print("Raw number of sport hours mentioned: \n", df["sport_hours"].value_counts())
@@ -101,14 +111,18 @@ def clean(df):
     df.loc[df["sport_cleaned"] == "2-4", "sport_cleaned"] = "3"
     df["sport_cleaned"] = pd.to_numeric(df.loc[:, "sport_cleaned"])
 
+    # print("Distribution of number of sport hours cleaned: \n", df["sport_cleaned"].value_counts(dropna=False))
+
     # clean column stress level
+    # print("Raw Stress level : \n", df["stress_level"].value_counts().to_string())
+    # remove impossible values < 0 or > 100
     df["stress_cleaned"] = df["stress_level"]
+
     df["stress_cleaned"] = pd.to_numeric(df.loc[:, "stress_cleaned"])
 
-    # random number
-    df["rand_number"] = pd.to_numeric(df.loc[:,"rand_number"], errors='coerce')
-
     # clean column estimate number of students
+    # print("Raw no students estimate : \n", df["no_students"].value_counts(dropna=False).to_string())
+
     df["no_students_cleaned"] = df["no_students"]
     df.loc[df["no_students_cleaned"] == "Two hundred fifty", "no_students_cleaned"] = "250"
     df.loc[df["no_students_cleaned"] == "Around200", "no_students_cleaned"] = "200"
@@ -119,10 +133,13 @@ def clean(df):
     df.loc[df["no_students_cleaned"] == "Around 200", "no_students_cleaned"] = "200"
     df.loc[df["no_students_cleaned"] == "1 million", "no_students_cleaned"] = "1000000"
     df["no_students_cleaned"] = pd.to_numeric(df.loc[:, "no_students_cleaned"])
+    #print("Cleaned no students estimate : \n", df["no_students_cleaned"].value_counts(dropna=False).to_string())
+
 
     # Error of estimation
     true_n_students = len(df)
     df["err_no_students"] = abs(df.loc[:, "no_students_cleaned"] - true_n_students)
+
 
     # age
     df["birthyear"] = df['birthday'].apply(birthyear)
@@ -145,25 +162,19 @@ def remove_outliers(df):
 
     # Stress
     # Delete impossible values everywhere because did not answer honestly
-    #print(len(df.loc[(df["stress_cleaned"] < 0) | (df["stress_cleaned"] > 100), :]))
     df.loc[(df["stress_cleaned"] < 0) | (df["stress_cleaned"] > 100), "stress_cleaned"] = pd.NA
 
     # No students estimate
     # Remove impossible and silly values (< 20 or > 600)
-    #print(len(df.loc[(df["no_students_cleaned"] < 20) | (df["no_students_cleaned"] > 600), :]))
     df.loc[(df["no_students_cleaned"] < 20) | (df["no_students_cleaned"] > 600),
         "no_students_cleaned"] = pd.NA
 
     # re-calculate error of estimation of number of students
     true_n_students = len(df)
     df["err_no_students"] = abs(df.loc[:, "no_students_cleaned"] - true_n_students)
-    print(df["err_no_students"].describe())
-
 
     # Age
-    #print(len(df.loc[(df["age"] < 18) | (df["age"] > 80), :]) )
     df.loc[(df["age"] < 18) | (df["age"] > 80), "age"] = pd.NA
-    #print(df["age"].describe())
 
     # Gender
     df.loc[(df["gender"] == "non-binary") |
@@ -249,6 +260,7 @@ def impute_missing_values(df):
 
 
 def explore_data(df):
+
     # Number of observations
     N = len(df)
     print("Number of observations: ", N)
@@ -266,10 +278,10 @@ def explore_data(df):
     print(df["age"].value_counts(dropna=False))
     print(df["age"].describe())
     df.hist(column="age", bins=25)
-    plt.xlabel("Age in years")
-    plt.ylabel("Frequency")
-    plt.title("Age")
-    plt.show()
+    # plt.xlabel("Age in years")
+    # plt.ylabel("Frequency")
+    # plt.title("Age")
+    # plt.show()
 
     # no students estimation
     print("No Students: ")
@@ -286,17 +298,11 @@ def explore_data(df):
     print(df["sport_cleaned"].value_counts(dropna=False))
     print(df["sport_cleaned"].describe())
 
-    # random number
-    print("Random number: ")
-    print(df["rand_number"].value_counts(dropna=False).to_string())
-    print(df["rand_number"].describe())
-
     # bedtime
     print("Bedtime: ")
     print(df["bedtimes_cleaned"].value_counts(dropna=False))
     df["bedtimes_cleaned_t"] = df["bedtimes_cleaned"] - 1
     df.loc[(df["bedtimes_cleaned_t"] < 0), "bedtimes_cleaned_t"] = 23
-
 
 
     #################### Categorical values: counts, NAs
@@ -339,6 +345,7 @@ def explore_data(df):
     for i in range(len(categories)):
         counts[i] = df['happy_' + categories[i]].values.sum()
     counts, categories = zip(*sorted(zip(counts, categories), reverse=True))
+
     print("Categories good day counts: ")
     print(categories, counts)
 
@@ -391,12 +398,8 @@ def plot_cleaned_data(df):
     plt.show()
 
     # correlations
-    dfsub = df[['stress_cleaned', 'sport_cleaned', 'age', 'bed_late', 'err_no_students','happy_weather', 'happy_food',
+    dfsub = df[['stressed', 'bed_late', 'err_no_students','happy_weather', 'happy_food',
                 'happy_mental_health', 'happy_exercise', 'happy_sleep', 'happy_social']]
-    ylabels = ['stress_level', 'sport_hours', 'age', 'bed_late', 'err_no_students','happy_weather', 'happy_food',
-                'happy_mental_health', 'happy_exercise', 'happy_sleep', 'happy_social']
-    xlabels = ['stress', 'sport', 'age', 'bed late', 'error', 'weather', 'food',
-               'm health', 'exercise', 'sleep', 'social']
     matrix = dfsub.corr().round(2)
     print(matrix)
     mask = np.triu(np.ones_like(matrix, dtype=bool))
@@ -404,11 +407,7 @@ def plot_cleaned_data(df):
     sns.heatmap(matrix, annot=True,vmax=1, vmin=-1, center=0, cmap='vlag', mask=mask)
     plt.title("Correlation Matrix of various numerical outcomes")
     ax = plt.gca()
-    ax.tick_params(axis='x', labelrotation=60)
-    xticks = ax.get_xticks()
-    yticks = ax.get_yticks()
-    plt.xticks(ticks=xticks, labels=xlabels)
-    plt.yticks(ticks=yticks, labels=ylabels)
+    ax.tick_params(axis='x', labelrotation=45)
     fig.tight_layout()
     fig.savefig("corr_matrix_heatmap.png")
     plt.show()
@@ -427,7 +426,7 @@ def clean_classification(data):
     all_buzzwords = {
         'social': "friend|social|family|sex|party",
         'weather': "weather|sun|sky",
-        'exercise': "sport|gym|exercise|working out",
+        'exercise': "sports|gym|exercise|working out",
         'food': "brownie|food|coffee|water|bread|pizza|meal|tea|lunch|dinner|breakfast|eat",
         'mental_health': "stress|mental|relax|rest",
         'sleep': 'sleep'
@@ -443,17 +442,124 @@ def clean_classification(data):
     # create stressed/not stressed boolean
     data_copy['stressed'] = np.where(data_copy['stress_level'] > 50, True, False)
 
-    # print(data.corr(numeric_only=True).to_string())
+
+    #print(data.corr(numeric_only=True).to_string())
     return data_copy
+
+def classification_prep(data):
+    data['ml_course_categorical'] = pd.Categorical(data["ml_course"], categories=["yes", "no"], ordered=False)
+    data['information_retrieval_course_categorical'] = pd.Categorical(data["information_retrieval_course"],
+                                                                           categories=["1", "0"], ordered=False)
+    data['statistics_course_categorical'] = pd.Categorical(data["statistics_course"],
+                                                                categories=["mu", "sigma"], ordered=False)
+    data['database_course'] = pd.Categorical(data["database_course"],
+                                                                categories=["ja", "nee"], ordered=False)
+    data['used_chatgpt'] = pd.Categorical(data["used_chatgpt"],
+                                                                categories=["yes", "no"], ordered=False)
+
+    subdata = data[["major_cleaned", 'ml_course_categorical', 'information_retrieval_course_categorical',
+                    'statistics_course_categorical', 'database_course', 'used_chatgpt', 'gender']]
+
+    for i in subdata.columns:
+        for j in subdata.columns:
+            CrosstabResult = pd.crosstab(index=subdata[i], columns=subdata[j])
+            ChiSqResult = chi2_contingency(CrosstabResult)
+            print("the p-value of the chisq test between", i, "and", j, "is", ChiSqResult[1])
+
+    # print(data['ml_course_categorical'])
+    # print(data['information_retrieval_course_categorical'])
+    # print(data['statistics_course_categorical'])
+    # print(data["major_cleaned"].value_counts())
+    # print(data['ml_course_categorical'].value_counts())
+    # print(data['information_retrieval_course_categorical'].value_counts())
+    # print(data['statistics_course_categorical'].value_counts())
+    # data_encoded = pd.get_dummies(data,
+    #                               columns=['ml_course_categorical', 'information_retrieval_course_categorical',
+    #                                        'statistics_course_categorical'])
+    #
+    # subdf = data_encoded['major_cleaned']
+    # print(data.corr(numeric_only=False).to_string())
+    # print(data_encoded["ml_course_categorical_yes"])
+    # print(data_copy[])
+
+def impute_categories_majority(df):
+    df["ml_course_categorical"] = df["ml_course_categorical"].fillna("yes")
+    df['information_retrieval_course_categorical'] = df['information_retrieval_course_categorical'].fillna("0")
+    df["database_course"] = df["database_course"].fillna("ja")
+    df["statistics_course"] = df["statistics_course"].fillna("mu")
+    df["used_chatgpt"] = df["used_chatgpt"].fillna("yes")
+
+    return df
+
+def majority_class_classifier (df):
+    y_test = df["major_cleaned"]
+    y_pred = np.full((245, 1), "AI")
+
+    accuracy = accuracy_score(y_test, y_pred)
+    print("Accuracy majority class: ", accuracy)
+
+    return accuracy
+
+def K_nearest_neighbours (data):
+    subdf = data[["major_cleaned", 'ml_course_categorical', 'information_retrieval_course_categorical',
+                  'statistics_course_categorical', 'database_course', 'used_chatgpt', 'gender']]
+    list_features = ['ml_course_categorical', 'information_retrieval_course_categorical',
+                  'statistics_course_categorical', 'database_course', 'used_chatgpt']
+    subdf[list_features] = subdf[list_features].apply(lambda x: x.cat.codes)
+    #train, test = train_test_split(subdf, test_size=0.25)
+
+
+    #print(list_features)
+    X = subdf[list_features]
+    #print(x_columns)
+    y = subdf["major_cleaned"]
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+    knn = KNeighborsClassifier(n_neighbors=1)
+    knn.fit(X_train, y_train)
+    y_pred = knn.predict(X_test)
+
+    accuracy = accuracy_score(y_test, y_pred)
+    print("Accuracy KNN: ", accuracy)
+
+    return accuracy
+
+def randomforest(data):
+    subdf = data[["major_cleaned", 'ml_course_categorical', 'information_retrieval_course_categorical',
+                  'statistics_course_categorical', 'database_course', 'used_chatgpt', 'gender']]
+    list_features = ['ml_course_categorical', 'information_retrieval_course_categorical',
+                  'statistics_course_categorical', 'database_course', 'used_chatgpt']
+    subdf[list_features] = subdf[list_features].apply(lambda x: x.cat.codes)
+
+    X = subdf[list_features]
+    y = subdf["major_cleaned"]
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+    rf= RandomForestClassifier()
+    rf.fit(X_train, y_train)
+    y_pred = rf.predict(X_test)
+    accuracy = accuracy_score(y_test, y_pred)
+    print("Accuracy Random Forest:", accuracy)
+    return
+
+
 
 if __name__ == '__main__':
     # load in data file
     data = pd.read_csv('ODI-2024.csv')
     data = clean(data)
     data = clean_classification(data)
-    #explore_data(data)
+    explore_data(data)
+
+    classification_prep(data)
+
     data = remove_outliers(data)
+
+    data_1 = impute_categories_majority(data)
+
+    majority_class_classifier(data_1)
+    K_nearest_neighbours(data_1)
     #plot_cleaned_data(data)
     imputed_reduced_data = impute_missing_values(data)
-
+    randomforest(data_1)
 
