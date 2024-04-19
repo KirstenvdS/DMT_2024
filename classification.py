@@ -1,9 +1,10 @@
-from exploratory_data_analysis import clean, clean_classification, remove_outliers
+from exploratory_data_analysis import clean, clean_classification, remove_outliers, impute_missing_values
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from scipy.stats import chi2_contingency
 from sklearn.neighbors import KNeighborsRegressor
+from miceforest import ImputationKernel
 
 
 def classification_prep(data):
@@ -39,27 +40,83 @@ def classification_prep(data):
     # print(data_copy[])
 
 
-def K_nearest_neighbours(data):
-    train, test = train_test_split(data, test_size=0.25)
-    subdf = train.drop(["major_cleaned", "timestamp"], axis=1)
-    x_columns = list(train.columns.values)
-    y_column = ["major_cleaned"]
+def majority_class_classifier (df):
+    y_test = df["major_cleaned"]
+    y_pred = np.full((245, 1), "AI")
 
-    knn = KNeighborsRegressor(n_neighbors=5)
-    knn.fit(train[x_columns], train[y_column])
-    knn.predict(test[x_columns])
-    return
+    accuracy = accuracy_score(y_test, y_pred)
+    print("Accuracy majority class: ", accuracy)
 
+    return accuracy
+
+def hyperparameterK (x_train, y_train):
+    k_values = [i for i in range(1, 16)]
+    scores = []
+
+    for k in k_values:
+        knn = KNeighborsClassifier(n_neighbors=k)
+        score = cross_val_score(knn, x_train, y_train, cv=10)
+        scores.append(np.mean(score))
+
+    best_index = np.argmax(scores)
+    best_k = k_values[best_index]
+
+    #print(scores, best_k)
+
+    return best_k
+
+
+def K_nearest_neighbours (data):
+    subdf = data[["major_cleaned", 'ml_course_categorical', 'information_retrieval_course_categorical',
+                  'statistics_course_categorical', 'database_course', 'used_chatgpt', 'gender']]
+    list_features = ['ml_course_categorical', 'information_retrieval_course_categorical',
+                  'statistics_course_categorical', 'database_course', 'used_chatgpt']
+    subdf[list_features] = subdf[list_features].apply(lambda x: x.cat.codes)
+    #train, test = train_test_split(subdf, test_size=0.25)
+
+
+    #print(list_features)
+    X = subdf[list_features]
+    #print(x_columns)
+    y = subdf["major_cleaned"]
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+    k = hyperparameterK(X_train, y_train)
+
+    knn = KNeighborsClassifier(n_neighbors=k)
+    knn.fit(X_train, y_train)
+    y_pred = knn.predict(X_test)
+
+    accuracy = accuracy_score(y_test, y_pred)
+    print("Accuracy KNN: ", accuracy)
+
+    interval = 1.96 * sqrt((accuracy * (1 - accuracy)) / 245)
+    print("Accuracy interval KNN:", interval)
+
+    return accuracy
 
 def randomforest(data):
-    train, test = train_test_split(data, test_size=0.25)
-    clf = RandomForestClassifier()
+    subdf = data[["major_cleaned", 'ml_course_categorical', 'information_retrieval_course_categorical',
+                  'statistics_course_categorical', 'database_course', 'used_chatgpt', 'gender']]
+    list_features = ['ml_course_categorical', 'information_retrieval_course_categorical',
+                  'statistics_course_categorical', 'database_course', 'used_chatgpt']
+    subdf[list_features] = subdf[list_features].apply(lambda x: x.cat.codes)
 
-    subdf = train.drop(["major_cleaned", "timestamp"], axis=1)
-    clf.fit(subdf, train["major_cleaned"])
+    X = subdf[list_features]
+    y = subdf["major_cleaned"]
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+    rf= RandomForestClassifier()
+    rf.fit(X_train, y_train)
+    y_pred = rf.predict(X_test)
+    accuracy = accuracy_score(y_test, y_pred)
+    print("Accuracy Random Forest:", accuracy)
+
+    interval = 1.96 * sqrt((accuracy * (1 - accuracy)) / 245)
+
+    print("Accuracy interval RF:", interval)
 
     return
-
 
 if __name__ == '__main__':
     # load in data file
@@ -68,5 +125,6 @@ if __name__ == '__main__':
     data = clean_classification(data)
     classification_prep(data)
     data = remove_outliers(data)
+    data = impute_missing_values(data)
     K_nearest_neighbours(data)
     # randomforest(data)
