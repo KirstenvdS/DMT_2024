@@ -3,10 +3,17 @@ import numpy as np
 import csv
 import matplotlib.pyplot as plt
 import pandas as pd
+pd.options.mode.copy_on_write = True # copy on write becomes default in pandas 3.0
 import re
 from scipy.stats import chi2_contingency
 import seaborn as sns
 from dateutil.parser import parse
+from sklearn.impute import SimpleImputer
+from miceforest import ImputationKernel
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+from scipy.stats import chi2_contingency
+from sklearn.neighbors import KNeighborsRegressor
 
 # Colors suitable for color blindness
 color_codes = ["#648FFF", "#785EF0", "#DC267F", "#FE6100", "#FFB000"]
@@ -173,8 +180,83 @@ def remove_outliers(df):
     df.loc[(df["gender"] == "non-binary") |
            (df["gender"] == "gender fluid") |
            (df["gender"] == "other"), "gender"] = "other"
+    # Set "not willing to answer" to NA
+    df.loc[df["gender"] == "not willing to answer", "gender"] = pd.NA
+
+    # Courses
+    df.loc[df["ml_course"] == "unknown", "ml_course"] = pd.NA
+    df.loc[df["information_retrieval_course"] == "unknown", "information_retrieval_course"] = pd.NA
+    df.loc[df["database_course"] == "unknown", "database_course"] = pd.NA
+    df.loc[df["statistics_course"] == "unknown", "statistics_course"] = pd.NA
+
+    # Used Chatgpt
+    df.loc[df["used_chatgpt"] == "not willing to say", "used_chatgpt"] = pd.NA
+
+    # Stand up
+    df.loc[df["stand_up"] == "unknown", "stand_up"] = pd.NA
+
+    print(df.isna().sum())
+
 
     return df
+
+def impute_missing_values(df):
+    ######### 1st method: mean/mode
+    ### Categorical variables
+    df_cat = df[["ml_course", "information_retrieval_course", "statistics_course", "database_course",
+                 "gender", "used_chatgpt", "stand_up", "bed_late"]]
+    imp_cat = SimpleImputer(missing_values=pd.NA, strategy="most_frequent")
+    df_cat = pd.DataFrame(imp_cat.fit_transform(df_cat))
+    print(df_cat.describe())
+
+    ### Numerical variables
+    df_num = df[["age", "no_students_cleaned", "stress_cleaned", "sport_cleaned"]]
+    imp_num = SimpleImputer(missing_values=pd.NA, strategy="median")
+    df_med = pd.DataFrame(imp_num.fit_transform(df_num))
+
+    ######### 2nd method: multivariate regression with miceforest
+    df_sub = df[["age", "no_students_cleaned", "stress_cleaned", "sport_cleaned", "ml_course",
+                 "information_retrieval_course",
+                 "statistics_course", "database_course",
+                 "gender", "used_chatgpt", "stand_up", "bed_late"]]
+    cat_features = ["ml_course", "information_retrieval_course", "statistics_course", "database_course",
+                 "gender", "used_chatgpt", "stand_up", "bed_late"]
+    for c in cat_features:
+        df_sub.loc[:,c] = pd.Categorical(df_sub[c])
+
+    # Following code from https://www.datacamp.com/tutorial/techniques-to-handle-missing-data-values :
+    mice_kernel = ImputationKernel(
+        data=df_sub,
+        save_all_iterations=True,
+        random_state=2024 # random seed to make results reproducible
+    )
+    mice_kernel.mice(10)
+    mice_imputation = mice_kernel.complete_data()
+
+    # plot density of age
+    plt.figure(figsize=(10,5))
+    plt.subplot(1,2,1)
+    df["age"].plot(kind="kde",  label="original")
+    df_med[0].plot(kind="kde",  label="median")
+    mice_imputation["age"].plot(kind="kde", label="multiple")
+    plt.legend(loc="center right")
+    plt.title("age")
+    plt.suptitle("Result of missing value imputation with different methods")
+    plt.xlabel("Age in years")
+
+    # barplot
+    plt.subplot(1,2,2)
+    #print(mice_imputation.loc[:, "used_chatgpt"].value_counts(dropna=False))
+    bars_df = [["yes", "original", 186], ["yes", "most frequent", 222], ["yes", "multiple", 217],
+               ["no", "original", 23], ["no", "most frequent", 23], ["no", "multiple", 28]]
+    df = pd.DataFrame(bars_df, columns=['Answer', 'Imputation Method', 'Value'])
+    sns.barplot(x='Answer', y='Value', data=df, hue='Imputation Method')
+    plt.title("used_chatgpt")
+    plt.legend(loc="center right")
+    plt.savefig("imputation_strategies.png")
+    plt.show()
+
+    return mice_imputation
 
 
 def explore_data(df):
@@ -196,10 +278,10 @@ def explore_data(df):
     print(df["age"].value_counts(dropna=False))
     print(df["age"].describe())
     df.hist(column="age", bins=25)
-    plt.xlabel("Age in years")
-    plt.ylabel("Frequency")
-    plt.title("Age")
-    plt.show()
+    # plt.xlabel("Age in years")
+    # plt.ylabel("Frequency")
+    # plt.title("Age")
+    # plt.show()
 
     # no students estimation
     print("No Students: ")
@@ -221,15 +303,7 @@ def explore_data(df):
     print(df["bedtimes_cleaned"].value_counts(dropna=False))
     df["bedtimes_cleaned_t"] = df["bedtimes_cleaned"] - 1
     df.loc[(df["bedtimes_cleaned_t"] < 0), "bedtimes_cleaned_t"] = 23
-    df.hist("bedtimes_cleaned_t", bins=24, color=color_codes[0])
-    plt.xlabel("Time in hours")
-    plt.ylabel("Frequency")
-    plt.title("Bedtimes")
-    plt.xticks([0,2,4,6,8,10,12,14,16,18,20,22])
-    plt.savefig("bedtimes_hist.png")
-    plt.show()
 
-    # ignore random number because it doesn't make sense
 
     #################### Categorical values: counts, NAs
     # major
@@ -271,11 +345,27 @@ def explore_data(df):
     for i in range(len(categories)):
         counts[i] = df['happy_' + categories[i]].values.sum()
     counts, categories = zip(*sorted(zip(counts, categories), reverse=True))
+
+    print("Categories good day counts: ")
+    print(categories, counts)
+
+    # Plotting
+    # Subplot 1
+    plt.figure(figsize=(10,5))
+    plt.subplot(1,2,2)
     plt.bar(categories, counts, color=color_codes[0])
-    plt.title("Categories mentioned in \"What makes a good day for you?\"")
+    plt.title("\"What makes a good day for you?\"")
     plt.xlabel("Category")
     plt.ylabel("Frequency")
-    plt.savefig("good_day_categories_barplot.png")
+
+    # Subplot 2
+    plt.subplot(1,2,1)
+    df["bedtimes_cleaned_t"].plot.hist(bins=24, color=color_codes[0])
+    plt.xlabel("Time in hours")
+    plt.ylabel("Frequency")
+    plt.title("Bedtimes")
+    plt.xticks([0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22])
+    plt.savefig("bedtimes_good_day_subplots.png")
     plt.show()
 
 def plot_cleaned_data(df):
@@ -362,8 +452,13 @@ def classification_prep(data):
                                                                            categories=["1", "0"], ordered=False)
     data['statistics_course_categorical'] = pd.Categorical(data["statistics_course"],
                                                                 categories=["mu", "sigma"], ordered=False)
+    data['database_course'] = pd.Categorical(data["database_course"],
+                                                                categories=["ja", "nee"], ordered=False)
+    data['used_chatgpt'] = pd.Categorical(data["used_chatgpt"],
+                                                                categories=["yes", "no"], ordered=False)
 
-    subdata = data[["major_cleaned", 'ml_course_categorical', 'information_retrieval_course_categorical', 'statistics_course_categorical']]
+    subdata = data[["major_cleaned", 'ml_course_categorical', 'information_retrieval_course_categorical',
+                    'statistics_course_categorical', 'database_course', 'used_chatgpt', 'gender']]
 
     for i in subdata.columns:
         for j in subdata.columns:
@@ -374,6 +469,7 @@ def classification_prep(data):
     # print(data['ml_course_categorical'])
     # print(data['information_retrieval_course_categorical'])
     # print(data['statistics_course_categorical'])
+    # print(data["major_cleaned"].value_counts())
     # print(data['ml_course_categorical'].value_counts())
     # print(data['information_retrieval_course_categorical'].value_counts())
     # print(data['statistics_course_categorical'].value_counts())
@@ -385,6 +481,66 @@ def classification_prep(data):
     # print(data.corr(numeric_only=False).to_string())
     # print(data_encoded["ml_course_categorical_yes"])
     # print(data_copy[])
+
+def impute_categories_majority(df):
+    df["ml_course_categorical"] = df["ml_course_categorical"].fillna("yes")
+    df['information_retrieval_course_categorical'] = df['information_retrieval_course_categorical'].fillna("0")
+    df["database_course"] = df["database_course"].fillna("ja")
+    df["statistics_course"] = df["statistics_course"].fillna("mu")
+    df["used_chatgpt"] = df["used_chatgpt"].fillna("yes")
+
+    return df
+
+def majority_class_classifier (df):
+    y_test = df["major_cleaned"]
+    y_pred = np.full((245, 1), "AI")
+
+    accuracy = accuracy_score(y_test, y_pred)
+    print("Accuracy majority class: ", accuracy)
+
+    return accuracy
+
+def K_nearest_neighbours (data):
+    subdf = data[["major_cleaned", 'ml_course_categorical', 'information_retrieval_course_categorical',
+                  'statistics_course_categorical', 'database_course', 'used_chatgpt', 'gender']]
+    list_features = ['ml_course_categorical', 'information_retrieval_course_categorical',
+                  'statistics_course_categorical', 'database_course', 'used_chatgpt']
+    subdf[list_features] = subdf[list_features].apply(lambda x: x.cat.codes)
+    #train, test = train_test_split(subdf, test_size=0.25)
+
+
+    #print(list_features)
+    X = subdf[list_features]
+    #print(x_columns)
+    y = subdf["major_cleaned"]
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+    knn = KNeighborsClassifier(n_neighbors=1)
+    knn.fit(X_train, y_train)
+    y_pred = knn.predict(X_test)
+
+    accuracy = accuracy_score(y_test, y_pred)
+    print("Accuracy KNN: ", accuracy)
+
+    return accuracy
+
+def randomforest(data):
+    subdf = data[["major_cleaned", 'ml_course_categorical', 'information_retrieval_course_categorical',
+                  'statistics_course_categorical', 'database_course', 'used_chatgpt', 'gender']]
+    list_features = ['ml_course_categorical', 'information_retrieval_course_categorical',
+                  'statistics_course_categorical', 'database_course', 'used_chatgpt']
+    subdf[list_features] = subdf[list_features].apply(lambda x: x.cat.codes)
+
+    X = subdf[list_features]
+    y = subdf["major_cleaned"]
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+    rf= RandomForestClassifier()
+    rf.fit(X_train, y_train)
+    y_pred = rf.predict(X_test)
+    accuracy = accuracy_score(y_test, y_pred)
+    print("Accuracy Random Forest:", accuracy)
+    return
 
 
 
@@ -398,5 +554,12 @@ if __name__ == '__main__':
     classification_prep(data)
 
     data = remove_outliers(data)
-    plot_cleaned_data(data)
+
+    data_1 = impute_categories_majority(data)
+
+    majority_class_classifier(data_1)
+    K_nearest_neighbours(data_1)
+    #plot_cleaned_data(data)
+    imputed_reduced_data = impute_missing_values(data)
+    randomforest(data_1)
 
