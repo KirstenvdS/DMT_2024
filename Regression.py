@@ -9,6 +9,7 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.pipeline import Pipeline
 from sklearn.impute import KNNImputer
 from sklearn.linear_model import LinearRegression
+from sklearn.metrics import r2_score
 from sklearn.metrics import mean_absolute_error as mae
 from sklearn.metrics import mean_squared_error as mse
 
@@ -111,7 +112,6 @@ def preprocessing(df):
 
         def fit_transform(self,X,y=None):
             return self.fit(X,y).transform(X)
-
     
     df = MultiColumnLabelEncoder(columns = ['major','ml_course','information_retrieval_course','statistics_course','database_course', 'gender','used_chatgpt']).fit_transform(df)
 
@@ -219,7 +219,9 @@ def multiple_linear_regression(df):
 
     y_pred_train = lr.predict(X_train)
     y_pred_test = lr.predict(X_test)
-
+    
+    r2 = r2_score(y_test, y_pred_test)
+    print("r2: {}".format(r2))
 
     plt.scatter(y_test, y_pred_test)
     plt.xlabel("Actual stress level")
@@ -250,16 +252,23 @@ def simple_regression(data):
     
     y_pred_train = lr.predict(X_train)
     y_pred_test = lr.predict(X_test)
+    
+    r2 = r2_score(y_test, y_pred_test)
+    print("r2: {}".format(r2))
 
-    
-    plt.scatter(y_test, y_pred_test)
-    plt.xlabel("Actual stress level")
-    plt.ylabel("Predicted stress level")
-    plt.show()
-    
     # Prediction on training set
     plt.scatter(X_train, y_train, color = 'lightcoral')
     plt.plot(X_train, y_pred_train, color = 'firebrick')
+    plt.title('Bedtime vs Stress level (Training Set)')
+    plt.xlabel('Bedtime')
+    plt.ylabel('Stress level')
+    plt.legend(['X_train/Pred(y_test)', 'X_train/y_train'], title = 'Bedtime/Stress level', loc='best', facecolor='white')
+    plt.box(False)
+    plt.show()
+    
+    # Prediction on training set
+    plt.scatter(X_test, y_test, color = 'lightcoral')
+    plt.plot(X_test, y_pred_test, color = 'firebrick')
     plt.title('Bedtime vs Stress level (Training Set)')
     plt.xlabel('Bedtime')
     plt.ylabel('Stress level')
@@ -278,37 +287,5 @@ df = pd.read_csv('ODI-2024.csv')
 df = clean(df)
 df = preprocessing(df)
 df = KNN_imputation(df)
-#multiple_linear_regression(df)
-simple_regression(df)
-
-
-    
-    
-
-    
-    
-    
-    
-    
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+multiple_linear_regression(df)
+#simple_regression(df)
