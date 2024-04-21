@@ -262,17 +262,17 @@ def simple_regression(data):
     plt.title('Bedtime vs Stress level (Training Set)')
     plt.xlabel('Bedtime')
     plt.ylabel('Stress level')
-    plt.legend(['X_train/Pred(y_test)', 'X_train/y_train'], title = 'Bedtime/Stress level', loc='best', facecolor='white')
+    plt.legend(['X_train/Pred(y_train)', 'X_train/y_train'], title = 'Bedtime/Stress level', loc='best', facecolor='white')
     plt.box(False)
     plt.show()
     
     # Prediction on training set
     plt.scatter(X_test, y_test, color = 'lightcoral')
     plt.plot(X_test, y_pred_test, color = 'firebrick')
-    plt.title('Bedtime vs Stress level (Training Set)')
+    plt.title('Bedtime vs Stress level (Test Set)')
     plt.xlabel('Bedtime')
     plt.ylabel('Stress level')
-    plt.legend(['X_train/Pred(y_test)', 'X_train/y_train'], title = 'Bedtime/Stress level', loc='best', facecolor='white')
+    plt.legend(['X_test/Pred(y_test)', 'X_test/y_test'], title = 'Bedtime/Stress level', loc='best', facecolor='white')
     plt.box(False)
     plt.show()
     
