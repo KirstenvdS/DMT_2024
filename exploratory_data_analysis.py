@@ -13,7 +13,11 @@ from miceforest import ImputationKernel
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from scipy.stats import chi2_contingency
-from sklearn.neighbors import KNeighborsRegressor
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score
+
 
 # Colors suitable for color blindness
 color_codes = ["#648FFF", "#785EF0", "#DC267F", "#FE6100", "#FFB000"]
@@ -218,12 +222,16 @@ def impute_missing_values(df):
     df_sub = df[["age", "no_students_cleaned", "stress_cleaned", "sport_cleaned", "ml_course",
                  "information_retrieval_course",
                  "statistics_course", "database_course",
-                 "gender", "used_chatgpt", "stand_up", "bed_late"]]
-    cat_features = ["ml_course", "information_retrieval_course", "statistics_course", "database_course",
-                 "gender", "used_chatgpt", "stand_up", "bed_late"]
-    for c in cat_features:
-        df_sub.loc[:,c] = pd.Categorical(df_sub[c])
+                 "used_chatgpt" , "bed_late"]]
+    # cat_features = ["ml_course", "information_retrieval_course", "statistics_course", "database_course",
+    #              "gender", "used_chatgpt", "bed_late"]
+    #
+    # for c in cat_features:
+    #     df_sub.loc[:, c] = pd.Categorical(df_sub[c])
+    #     print(c)
 
+
+    # print(df_sub.dtypes)
     # Following code from https://www.datacamp.com/tutorial/techniques-to-handle-missing-data-values :
     mice_kernel = ImputationKernel(
         data=df_sub,
@@ -233,30 +241,35 @@ def impute_missing_values(df):
     mice_kernel.mice(10)
     mice_imputation = mice_kernel.complete_data()
 
-    # plot density of age
-    plt.figure(figsize=(10,5))
-    plt.subplot(1,2,1)
-    df["age"].plot(kind="kde",  label="original")
-    df_med[0].plot(kind="kde",  label="median")
-    mice_imputation["age"].plot(kind="kde", label="multiple")
-    plt.legend(loc="center right")
-    plt.title("age")
-    plt.suptitle("Result of missing value imputation with different methods")
-    plt.xlabel("Age in years")
+    for column in mice_imputation.columns:
+        df[column] = mice_imputation[column]
+    # print("HERE")
+    # print(df.dtypes)
 
-    # barplot
-    plt.subplot(1,2,2)
+    # # plot density of age
+    # plt.figure(figsize=(10,5))
+    # plt.subplot(1,2,1)
+    # df["age"].plot(kind="kde",  label="original")
+    # df_med[0].plot(kind="kde",  label="median")
+    # mice_imputation["age"].plot(kind="kde", label="multiple")
+    # plt.legend(loc="center right")
+    # plt.title("age")
+    # plt.suptitle("Result of missing value imputation with different methods")
+    # plt.xlabel("Age in years")
+    #
+    # # barplot
+    # plt.subplot(1,2,2)
     #print(mice_imputation.loc[:, "used_chatgpt"].value_counts(dropna=False))
     bars_df = [["yes", "original", 186], ["yes", "most frequent", 222], ["yes", "multiple", 217],
                ["no", "original", 23], ["no", "most frequent", 23], ["no", "multiple", 28]]
-    df = pd.DataFrame(bars_df, columns=['Answer', 'Imputation Method', 'Value'])
-    sns.barplot(x='Answer', y='Value', data=df, hue='Imputation Method')
-    plt.title("used_chatgpt")
-    plt.legend(loc="center right")
-    plt.savefig("imputation_strategies.png")
-    plt.show()
+    #df = pd.DataFrame(bars_df, columns=['Answer', 'Imputation Method', 'Value'])
+    # sns.barplot(x='Answer', y='Value', data=df, hue='Imputation Method')
+    # plt.title("used_chatgpt")
+    # plt.legend(loc="center right")
+    # plt.savefig("imputation_strategies.png")
+    #plt.show()
 
-    return mice_imputation
+    return df
 
 
 def explore_data(df):
@@ -447,18 +460,18 @@ def clean_classification(data):
     return data_copy
 
 def classification_prep(data):
-    data['ml_course_categorical'] = pd.Categorical(data["ml_course"], categories=["yes", "no"], ordered=False)
-    data['information_retrieval_course_categorical'] = pd.Categorical(data["information_retrieval_course"],
+    data['ml_course'] = pd.Categorical(data["ml_course"], categories=["yes", "no"], ordered=False)
+    data['information_retrieval_course'] = pd.Categorical(data["information_retrieval_course"],
                                                                            categories=["1", "0"], ordered=False)
-    data['statistics_course_categorical'] = pd.Categorical(data["statistics_course"],
+    data['statistics_course'] = pd.Categorical(data["statistics_course"],
                                                                 categories=["mu", "sigma"], ordered=False)
     data['database_course'] = pd.Categorical(data["database_course"],
                                                                 categories=["ja", "nee"], ordered=False)
     data['used_chatgpt'] = pd.Categorical(data["used_chatgpt"],
                                                                 categories=["yes", "no"], ordered=False)
 
-    subdata = data[["major_cleaned", 'ml_course_categorical', 'information_retrieval_course_categorical',
-                    'statistics_course_categorical', 'database_course', 'used_chatgpt', 'gender']]
+    subdata = data[["major_cleaned", 'ml_course', 'information_retrieval_course',
+                    'statistics_course', 'database_course', 'used_chatgpt', 'gender']]
 
     for i in subdata.columns:
         for j in subdata.columns:
@@ -562,4 +575,3 @@ if __name__ == '__main__':
     #plot_cleaned_data(data)
     imputed_reduced_data = impute_missing_values(data)
     randomforest(data_1)
-
